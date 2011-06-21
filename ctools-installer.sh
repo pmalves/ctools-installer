@@ -94,8 +94,8 @@ fi
 
 rm -rf $SOLUTION_DIR/system/cda
 rm -rf $SOLUTION_DIR/bi-developers/cda
-unzip  .tmp/dist/cda-TRUNK-*zip -d $SOLUTION_DIR/system/
-unzip  .tmp/dist/cda-samples-TRUNK-*zip -d $SOLUTION_DIR/
+unzip  .tmp/dist/cda-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
+unzip  .tmp/dist/cda-samples-TRUNK-*zip -d $SOLUTION_DIR/ > /dev/null
 
 
 echo
@@ -111,8 +111,8 @@ fi
 
 rm -rf $SOLUTION_DIR/system/pentaho-cdf-dd
 rm -rf $SOLUTION_DIR/cde_sample
-unzip  .tmp/dist/pentaho-cdf-dd-TRUNK-*zip -d $SOLUTION_DIR/system/
-unzip  .tmp/dist/pentaho-cdf-dd-solution-TRUNK-*zip -d $SOLUTION_DIR/
+unzip  .tmp/dist/pentaho-cdf-dd-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
+unzip  .tmp/dist/pentaho-cdf-dd-solution-TRUNK-*zip -d $SOLUTION_DIR/ > /dev/null
 
 
 echo
@@ -127,7 +127,7 @@ then
 fi
 
 rm -rf $SOLUTION_DIR/system/pentaho-cdf
-unzip  .tmp/dist/pentaho-cdf-TRUNK-*zip -d $SOLUTION_DIR/system/
+unzip  .tmp/dist/pentaho-cdf-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
 
 rm -rf .tmp
 
