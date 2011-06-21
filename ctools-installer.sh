@@ -3,7 +3,7 @@
 echo
 echo CTOOLS
 echo
-echo ctools-installer version 1.2
+echo ctools-installer version 1.3
 echo 
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
@@ -19,7 +19,7 @@ INSTALLER=$0
 rm -rf .tmp
 mkdir -p .tmp/dist
 
-wget 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
 if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
   echo
@@ -68,16 +68,16 @@ echo
 
 
 # CDF
-wget http://ci.analytical-labs.com/jenkins/job/Webdetails-CDF/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/pentaho-cdf-TRUNK-SNAPSHOT.zip -P .tmp/dist/ -o /dev/null
+wget --no-check-certificate http://ci.analytical-labs.com/jenkins/job/Webdetails-CDF/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/pentaho-cdf-TRUNK-SNAPSHOT.zip -P .tmp/dist/ -o /dev/null
 
 
 # CDA
-wget 'http://ci.analytical-labs.com/jenkins/job/Webdetails-CDA/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cda -o /dev/null
+wget --no-check-certificate 'http://ci.analytical-labs.com/jenkins/job/Webdetails-CDA/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cda -o /dev/null
 unzip .tmp/cda/dist.zip -d .tmp > /dev/null
 
 
 # CDE
-wget 'http://ci.analytical-labs.com/jenkins/job/Webdetails-CDE/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
+wget --no-check-certificate 'http://ci.analytical-labs.com/jenkins/job/Webdetails-CDE/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
 unzip .tmp/cde/dist.zip -d .tmp > /dev/null
 
 
