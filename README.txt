@@ -2,7 +2,7 @@ ctools-installer.sh is a shell script to install / update the different ctools i
 
 Currently supports CDF, CDA and CDE and pentaho 3.6 to 3.8
 
-Requiresments: Linux, macintosh or windows with cygwin, wget, unzip
+Requirements: Linux, macintosh or windows with cygwin, wget, unzip
 
 Usage: ctools-installer.sh <path-to-pentaho-solutions>
 
