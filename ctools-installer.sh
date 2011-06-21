@@ -25,7 +25,7 @@ if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
   echo 
   read -e answer
 
-  if [[ $answer != "Y" ]]
+  if [[ $answer == "Y" ]]
   then
   	cp .tmp/ctools-installer.sh $0
   	echo Upgrade successfull. Rerun
