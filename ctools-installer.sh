@@ -3,7 +3,7 @@
 echo
 echo CTOOLS
 echo
-echo ctools-installer version 1.1
+echo ctools-installer version 1.2
 echo 
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
@@ -71,12 +71,12 @@ wget http://ci.analytical-labs.com/jenkins/job/Webdetails-CDF/lastSuccessfulBuil
 
 # CDA
 wget 'http://ci.analytical-labs.com/jenkins/job/Webdetails-CDA/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cda -o /dev/null
-unzip .tmp/cda/dist.zip -d .tmp
+unzip .tmp/cda/dist.zip -d .tmp > /dev/null
 
 
 # CDE
 wget 'http://ci.analytical-labs.com/jenkins/job/Webdetails-CDE/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
-unzip .tmp/cde/dist.zip -d .tmp
+unzip .tmp/cde/dist.zip -d .tmp > /dev/null
 
 
 echo
