@@ -1,13 +1,40 @@
 #!/bin/bash
 
+echo
 echo CTOOLS
 echo
-echo ctools-installer version 1.0
+echo ctools-installer version 1.1
 echo 
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
 echo Copyright Webdetails 2011
 echo
+
+
+INSTALLER=$0
+
+# Checking for a new version
+rm -rf .tmp
+mkdir -p .tmp/dist
+
+wget 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+
+if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
+  echo
+  echo There a new ctools-installer verison available. Do you want to upgrade? [nY]
+  echo 
+  read -e answer
+
+  if [[ $answer != "Y" ]]
+  then
+  	cp .tmp/ctools-installer.sh $0
+  	echo Upgrade successfull. Rerun
+  	exit 0
+  fi
+
+fi
+
+
 
 SOLUTION_DIR=$1
 
@@ -37,8 +64,6 @@ echo
 echo Downloading files
 echo
 
-rm -rf .tmp
-mkdir -p .tmp/dist
 
 # CDF
 wget http://ci.analytical-labs.com/jenkins/job/Webdetails-CDF/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/pentaho-cdf-TRUNK-SNAPSHOT.zip -P .tmp/dist/ -o /dev/null
@@ -101,6 +126,8 @@ fi
 
 rm -rf $SOLUTION_DIR/system/pentaho-cdf
 unzip  .tmp/dist/pentaho-cdf-TRUNK-*zip -d $SOLUTION_DIR/system/
+
+rm -rf .tmp
 
 
 echo
