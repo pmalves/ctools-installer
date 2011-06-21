@@ -9,7 +9,9 @@ echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
 echo Copyright Webdetails 2011
 echo
-
+echo "Disclaimer: we can't be responsible for any damage done to your system, which hopefully will not happen"
+echo Note: ctools-installer.sh will upgrade the plugins under system directory.
+echo "      Any changes you have made there (eg: cdf templates) will have to be backed up and manually copied after running the script"
 
 INSTALLER=$0
 
