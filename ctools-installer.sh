@@ -3,11 +3,21 @@
 echo
 echo CTOOLS
 echo
-echo ctools-installer version 1.3
+echo ctools-installer version 1.4
 echo 
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
 echo Copyright Webdetails 2011
+echo
+echo 
+echo Changelog:
+echo
+echo v1.4 - Added Saiku for the list of installs
+echo v1.3 - Added support for automatic updates
+echo v1.2 - Silent mode for downloading
+echo v1.1 - Minor bugfixes
+echo v1.0 - First release
+echo
 echo
 echo "Disclaimer: we can't be responsible for any damage done to your system, which hopefully will not happen"
 echo Note: ctools-installer.sh will upgrade the plugins under system directory.
@@ -81,6 +91,11 @@ wget --no-check-certificate 'http://ci.analytical-labs.com/jenkins/job/Webdetail
 unzip .tmp/cde/dist.zip -d .tmp > /dev/null
 
 
+# SAIKU
+
+wget --no-check-certificate 'http://ci.analytical-labs.com/jenkins/job/saiku-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/saiku-plugin-*zip*/*zip*/target.zip' -P .tmp/saiku -o /dev/null
+unzip .tmp/saiku/target.zip -d .tmp > /dev/null
+
 echo
 echo Installing CDA. This will delete everything in $SOLUTION_DIR/system/cda. you sure? [n/Y]
 echo
@@ -128,6 +143,24 @@ fi
 
 rm -rf $SOLUTION_DIR/system/pentaho-cdf
 unzip  .tmp/dist/pentaho-cdf-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
+
+
+
+echo
+echo Installing Saiku. This will delete everything in $SOLUTION_DIR/system/saiku. you sure? [n/Y]
+echo
+read -e answer
+
+if [[ $answer != "Y" ]]
+then
+	echo Quitting
+	exit 1
+fi
+
+rm -rf $SOLUTION_DIR/system/saiku
+unzip  .tmp/saiku-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null
+
+
 
 rm -rf .tmp
 
