@@ -33,16 +33,12 @@ wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/mas
 
 if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
   echo
-  echo There a new ctools-installer verison available. Do you want to upgrade? [nY]
-  echo 
+  echo -n "There a new ctools-installer verison available. Do you want to upgrade? (y/N) "
   read -e answer
 
-  if [[ $answer == "Y" ]]
-  then
-  	cp .tmp/ctools-installer.sh $0
-  	echo Upgrade successfull. Rerun
-  	exit 0
-  fi
+  case $answer in
+    [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerun"; exit 0;;
+  esac
 
 fi
 
@@ -97,73 +93,58 @@ wget --no-check-certificate 'http://ci.analytical-labs.com/jenkins/job/saiku-plu
 unzip .tmp/saiku/target.zip -d .tmp > /dev/null
 
 echo
-echo Installing CDA. This will delete everything in $SOLUTION_DIR/system/cda. you sure? [n/Y]
-echo
+echo -n "Installing CDA. This will delete everything in $SOLUTION_DIR/system/cda. you sure? (y/N) "
 read -e answer
 
-if [[ $answer != "Y" ]]
-then
-	echo Quitting
-	exit 1
-fi
+case $answer in
+  [Yy]* ) ;;
+  * ) echo Quitting; exit 1;;
+esac
 
 rm -rf $SOLUTION_DIR/system/cda
 rm -rf $SOLUTION_DIR/bi-developers/cda
 unzip  .tmp/dist/cda-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
 unzip  .tmp/dist/cda-samples-TRUNK-*zip -d $SOLUTION_DIR/ > /dev/null
 
-
 echo
-echo Installing CDE. This will delete everything in $SOLUTION_DIR/system/pentaho-cdf-dd. you sure? [n/Y]
-echo
+echo -n "Installing CDE. This will delete everything in $SOLUTION_DIR/system/pentaho-cdf-dd. you sure? (y/N) "
 read -e answer
 
-if [[ $answer != "Y" ]]
-then
-	echo Quitting
-	exit 1
-fi
+case $answer in
+  [Yy]* ) ;;
+  * ) echo Quitting; exit 1;;
+esac
 
 rm -rf $SOLUTION_DIR/system/pentaho-cdf-dd
 rm -rf $SOLUTION_DIR/cde_sample
 unzip  .tmp/dist/pentaho-cdf-dd-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
 unzip  .tmp/dist/pentaho-cdf-dd-solution-TRUNK-*zip -d $SOLUTION_DIR/ > /dev/null
 
-
 echo
-echo Installing CDF. This will delete everything in $SOLUTION_DIR/system/pentaho-cdf. you sure? [n/Y]
-echo
+echo -n "Installing CDF. This will delete everything in $SOLUTION_DIR/system/pentaho-cdf. you sure? (y/N) "
 read -e answer
 
-if [[ $answer != "Y" ]]
-then
-	echo Quitting
-	exit 1
-fi
+case $answer in
+  [Yy]* ) ;;
+  * ) echo Quitting; exit 1;;
+esac
 
 rm -rf $SOLUTION_DIR/system/pentaho-cdf
 unzip  .tmp/dist/pentaho-cdf-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
 
-
-
 echo
-echo Installing Saiku. This will delete everything in $SOLUTION_DIR/system/saiku. you sure? [n/Y]
-echo
+echo -n "Installing Saiku. This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
 read -e answer
 
-if [[ $answer != "Y" ]]
-then
-	echo Quitting
-	exit 1
-fi
+case $answer in
+  [Yy]* ) ;;
+  * ) echo Quitting; exit 1;;
+esac
 
 rm -rf $SOLUTION_DIR/system/saiku
 unzip  .tmp/saiku-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null
 
-
-
 rm -rf .tmp
-
 
 echo
 echo Done!
