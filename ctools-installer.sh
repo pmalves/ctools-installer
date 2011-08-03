@@ -3,7 +3,7 @@
 echo
 echo CTOOLS
 echo
-echo ctools-installer version 1.4
+echo ctools-installer version 1.5
 echo 
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
@@ -12,6 +12,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.5 - Changed default indicator values in prompts
 echo v1.4 - Added Saiku for the list of installs
 echo v1.3 - Added support for automatic updates
 echo v1.2 - Silent mode for downloading
