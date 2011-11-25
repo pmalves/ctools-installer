@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.8'
+VER='1.9'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.9 - Added support for CDA stable \(release\) installations.
 echo v1.8 - Added CGG\; Script refactor
 echo v1.7 - Changed url locations to new path of analytical labs
 echo v1.6 - Changed saiku download path to 2.1
@@ -36,10 +37,11 @@ echo
 usage (){
 
 	echo 
-	echo Usage: ctools-installer.sh -s solutionPath -w pentahoWebapPath
+	echo Usage: ctools-installer.sh -s solutionPath -w pentahoWebapPath -b branch
 	echo
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (requiresd for cgg, eg: /biserver-ce/tomcat/webapps/pentaho)"
+	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
 	echo "-h    This help screen"
 	echo
 	exit 1
@@ -58,6 +60,7 @@ cleanup (){
 SOLUTION_DIR='PATH'				# Variable name
 WEBAPP_PATH='PATH'					# Show all matches (y/n)?
 HAS_WEBAPP_PATH=0
+BRANCH='stable'
 
 while [ $# -gt 0 ]
 do
@@ -65,6 +68,7 @@ do
 	--)	shift; break;;
 	-s)	SOLUTION_DIR="$2"; shift;;
 	-w)	WEBAPP_PATH="$2"; shift;;
+	-b) BRANCH="$2"; shift;;
 	--)	break;;
 	-*|-h)	usage ;;
     esac
@@ -79,6 +83,11 @@ HAS_WEBAPP_PATH=1
 fi
 
 
+if  [ $BRANCH != 'stable' ] && [ $BRANCH != 'dev' ]
+then
+	echo ERROR: Branch must either be stable or dev
+	exit 1
+fi
 
 if [[ ! -d $SOLUTION_DIR ]]
 then
@@ -103,12 +112,21 @@ then
 
 fi
 
+URL1='-release'
+FILESUFIX='-??.??.??'
+if [ $BRANCH = 'dev' ]
+then
+	URL1=''
+	FILESUFIX='-TRUNK'
+fi
+
+
 
 # Checking for a new version
 rm -rf .tmp
 mkdir -p .tmp/dist
 
-wget --no-check-certificate 'https://raw.github.com/webdetails/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
 if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
   echo
@@ -136,8 +154,9 @@ downloadCDF (){
 
 downloadCDA (){
 	# CDA
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'	
 	echo -n "Downloading CDA... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDA/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cda -o /dev/null
+	wget --no-check-certificate $URL -P .tmp/cda -o /dev/null
 	unzip .tmp/cda/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
@@ -189,8 +208,8 @@ installCDA (){
 
 	rm -rf $SOLUTION_DIR/system/cda
 	rm -rf $SOLUTION_DIR/bi-developers/cda
-	unzip  .tmp/dist/cda-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
-	unzip  .tmp/dist/cda-samples-TRUNK-*zip -d $SOLUTION_DIR/ > /dev/null
+	unzip  .tmp/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/ > /dev/null
 }
 
 installCGG (){
