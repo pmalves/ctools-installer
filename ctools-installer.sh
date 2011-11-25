@@ -108,7 +108,7 @@ fi
 rm -rf .tmp
 mkdir -p .tmp/dist
 
-wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+wget --no-check-certificate 'https://raw.github.com/webdetails/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
 if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
   echo
