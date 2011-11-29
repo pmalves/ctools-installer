@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.9'
+VER='1.10'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.10 - Added support for Saiku trunk snapshots installations.
 echo v1.9 - Added support for CDA stable \(release\) installations.
 echo v1.8 - Added CGG\; Script refactor
 echo v1.7 - Changed url locations to new path of analytical labs
@@ -182,10 +183,17 @@ downloadSaiku (){
 	# SAIKU
 
 	echo -n "Downloading Saiku... "
-	#wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/saiku-plugin-*zip*/*zip*/target.zip' -P .tmp/saiku -o /dev/null
+	#
 	#unzip .tmp/saiku/target.zip -d .tmp > /dev/null
 	# tamporarily switch for 2.1
-	wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.1.zip' -P .tmp -o /dev/null
+	if [ $BRANCH = 'dev' ]
+	then
+		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip' -P .tmp/saiku -o /dev/null
+		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
+		mv .tmp/target/saiku-* .tmp	
+	else
+		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.1.zip' -P .tmp -o /dev/null
+	fi
 	echo "Done"
 }
 
@@ -227,7 +235,7 @@ installCGG (){
 installSaiku (){
 
 	rm -rf $SOLUTION_DIR/system/saiku
-	unzip  .tmp/saiku-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/saiku-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null	
 
 }
 
