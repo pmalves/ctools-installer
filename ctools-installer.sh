@@ -43,6 +43,7 @@ usage (){
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (requiresd for cgg, eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
+	echo "-y    Assume yes to all prompts (except ctools-installer upgrade; skips upgrade prompt)"
 	echo "-h    This help screen"
 	echo
 	exit 1
@@ -62,6 +63,7 @@ SOLUTION_DIR='PATH'				# Variable name
 WEBAPP_PATH='PATH'					# Show all matches (y/n)?
 HAS_WEBAPP_PATH=0
 BRANCH='stable'
+ASSUME_YES=false
 
 while [ $# -gt 0 ]
 do
@@ -69,7 +71,8 @@ do
 	--)	shift; break;;
 	-s)	SOLUTION_DIR="$2"; shift;;
 	-w)	WEBAPP_PATH="$2"; shift;;
-	-b) BRANCH="$2"; shift;;
+	-b)   BRANCH="$2"; shift;;
+	-y)	ASSUME_YES=true;;
 	--)	break;;
 	-*|-h)	usage ;;
     esac
@@ -98,7 +101,7 @@ fi
 
 if [[ ! -d $SOLUTION_DIR/system ]]
 then
-	echo ERROR: Supplied solution path doesn\'t look like a valid pentaho solutions directory
+	echo "ERROR: Supplied solution path doesn't look like a valid pentaho solutions directory.  Missing system sub-directory."
 	exit 1
 fi
 
@@ -107,7 +110,7 @@ then
 	if [[ ! -d $WEBAPP_PATH/WEB-INF/lib ]]
 	then
 
-		echo "ERROR: Supplied webapp path doesn\'t look like a valid web application - missing WEB-INF/lib"
+		echo "ERROR: Supplied webapp path doesn't look like a valid web application - missing WEB-INF/lib"
 		exit 1
 	fi
 
@@ -127,19 +130,20 @@ fi
 rm -rf .tmp
 mkdir -p .tmp/dist
 
-wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+if ! $ASSUME_YES; then
+	wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
-if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
-  echo
-  echo -n "There a new ctools-installer verison available. Do you want to upgrade? (y/N) "
-  read -e answer
+	if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
+	  echo
+	  echo -n "There a new ctools-installer verison available. Do you want to upgrade? (y/N) "
+	  read -e answer
 
-  case $answer in
-    [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerun"; exit 0;;
-  esac
+	  case $answer in
+		 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerun"; exit 0;;
+	  esac
 
+	fi
 fi
-
 
 # Define download functions
 
@@ -248,61 +252,76 @@ INSTALL_CDE=0
 INSTALL_CGG=0
 INSTALL_SAIKU=0
 
-echo
-echo -n "Install CDF? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf. you sure? (y/N) "
-read -e answer
+if $ASSUME_YES; then
+	INSTALL_CDF=1
+else
+	echo
+	echo -n "Install CDF? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf. you sure? (y/N) "
+	read -e answer
 
-case $answer in
-  [Yy]* ) INSTALL_CDF=1;;
-  * ) ;;
-esac
+	case $answer in
+	  [Yy]* ) INSTALL_CDF=1;;
+	  * ) ;;
+	esac
+fi
 
+if $ASSUME_YES; then
+	INSTALL_CDA=1
+else
+	echo
+	echo -n "Install CDA? This will delete everything in $SOLUTION_DIR/system/cda. you sure? (y/N) "
+	read -e answer
 
-echo
-echo -n "Install CDA? This will delete everything in $SOLUTION_DIR/system/cda. you sure? (y/N) "
-read -e answer
+	case $answer in
+	  [Yy]* ) INSTALL_CDA=1;;
+	  * ) ;;
+	esac
+fi
 
-case $answer in
-  [Yy]* ) INSTALL_CDA=1;;
-  * ) ;;
-esac
+if $ASSUME_YES; then
+	INSTALL_CDE=1
+else
+	echo
+	echo -n "Install CDE? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf-dd. you sure? (y/N) "
+	read -e answer
 
-
-echo
-echo -n "Install CDE? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf-dd. you sure? (y/N) "
-read -e answer
-
-case $answer in
-  [Yy]* ) INSTALL_CDE=1;;
-  * ) ;;
-esac
-
+	case $answer in
+	  [Yy]* ) INSTALL_CDE=1;;
+	  * ) ;;
+	esac
+fi
 
 if [[ $HAS_WEBAPP_PATH -eq 1 ]]
 then
-	echo
-	echo -n "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
-	read -e answer
-	case $answer in
-	  [Yy]* ) INSTALL_CGG=1;;
-	  * ) ;;
-	esac
+	if $ASSUME_YES; then
+		INSTALL_CDG=1
+	else
+		echo
+		echo -n "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
+		read -e answer
+		case $answer in
+		  [Yy]* ) INSTALL_CGG=1;;
+		  * ) ;;
+		esac
+	fi
 else
 	echo
 	echo 'No webapp path provided, will not install CGG'
 fi
 
 
+if $ASSUME_YES; then
+	INSTALL_SAIKU=1
+else
+	echo
+	echo -n "Install Saiku? This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
+	read -e answer
 
-echo
-echo -n "Install Saiku? This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
-read -e answer
-
-case $answer in
-  [Yy]* ) INSTALL_SAIKU=1;;
-  * ) ;;
-esac
-
+	case $answer in
+	  [Yy]* ) INSTALL_SAIKU=1;;
+	  * ) ;;
+	esac
+fi
 
 nothingToDo (){
 	echo Nothing to do. Exiting
