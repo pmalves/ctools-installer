@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.10'
+VER='1.11'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.11 - Added support for -y option \(assume yes\) - Thanks to Christian G. Warden
 echo v1.10 - Added support for Saiku trunk snapshots installations.
 echo v1.9 - Added support for CDA stable \(release\) installations.
 echo v1.8 - Added CGG\; Script refactor
@@ -43,7 +44,7 @@ usage (){
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (requiresd for cgg, eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
-	echo "-y    Assume yes to all prompts (except ctools-installer upgrade; skips upgrade prompt)"
+	echo "-y    Assume yes to all prompts"
 	echo "-h    This help screen"
 	echo
 	exit 1
@@ -130,19 +131,17 @@ fi
 rm -rf .tmp
 mkdir -p .tmp/dist
 
-if ! $ASSUME_YES; then
-	wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
-	if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
-	  echo
-	  echo -n "There a new ctools-installer verison available. Do you want to upgrade? (y/N) "
-	  read -e answer
+if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
+  echo
+  echo -n "There a new ctools-installer verison available. Do you want to upgrade? (y/N) "
+  read -e answer
 
-	  case $answer in
-		 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerun"; exit 0;;
-	  esac
+  case $answer in
+	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerun"; exit 0;;
+  esac
 
-	fi
 fi
 
 # Define download functions
