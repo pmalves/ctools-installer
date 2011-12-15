@@ -38,7 +38,7 @@ echo
 usage (){
 
 	echo 
-	echo Usage: ctools-installer.sh -s solutionPath -w pentahoWebapPath -b branch
+	echo "Usage: ctools-installer.sh -s solutionPath [-w pentahoWebapPath] [-b branch]"
 	echo
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (requiresd for cgg, eg: /biserver-ce/tomcat/webapps/pentaho)"
