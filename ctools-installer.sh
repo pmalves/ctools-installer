@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.12 - Fixed typo in -Y option
 echo v1.11 - Added support for -y option \(assume yes\) - Thanks to Christian G. Warden
 echo v1.10 - Added support for Saiku trunk snapshots installations.
 echo v1.9 - Added support for CDA stable \(release\) installations.
