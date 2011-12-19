@@ -293,7 +293,7 @@ fi
 if [[ $HAS_WEBAPP_PATH -eq 1 ]]
 then
 	if $ASSUME_YES; then
-		INSTALL_CDG=1
+		INSTALL_CGG=1
 	else
 		echo
 		echo -n "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
