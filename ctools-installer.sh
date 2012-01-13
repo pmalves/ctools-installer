@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.13'
+VER='1.11'
 
 echo
 echo CTOOLS
@@ -15,7 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
-echo v1.13 - Added support for CDF stable \(release\) installations.
+echo v1.13 - Fixed issue in CGG download
 echo v1.12 - Fixed typo in -Y option
 echo v1.11 - Added support for -y option \(assume yes\) - Thanks to Christian G. Warden
 echo v1.10 - Added support for Saiku trunk snapshots installations.
@@ -151,10 +151,8 @@ fi
 downloadCDF (){
 
 	# CDF
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'	
 	echo -n "Downloading CDF... "
-	wget --no-check-certificate $URL -P .tmp/dist/ -o /dev/null	
-	unzip .tmp/dist/dist.zip -d .tmp > /dev/null
+	wget --no-check-certificate http://ci.analytical-labs.com/job/Webdetails-CDF/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/pentaho-cdf-TRUNK-SNAPSHOT.zip -P .tmp/dist/ -o /dev/null
 	echo "Done"
 
 }
@@ -209,7 +207,7 @@ downloadSaiku (){
 
 installCDF (){
 	rm -rf $SOLUTION_DIR/system/pentaho-cdf
-	unzip  .tmp/dist/pentaho-cdf$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/pentaho-cdf-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
 }
 
 installCDE (){
@@ -229,7 +227,7 @@ installCDA (){
 
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
-	unzip  .tmp/archive/dist/cgg-*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/archive/dist/cgg-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
