@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.15'
+VER='1.16'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.16 - Added support for CDC and Saiku-adhoc \(only for trunk/dev\) installation.
 echo v1.15 - Change to CDF samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
 echo v1.14 - Added support for CDF stable \(release\) installations.
 echo v1.13 - Fixed issue in CGG download
@@ -188,6 +189,16 @@ downloadCGG (){
 	echo "Done"
 }
 
+downloadCDC (){
+	# CDC
+	echo -n "Downloading CDC... "
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDC/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdc -o /dev/null
+	unzip .tmp/cdc/dist.zip -d .tmp > /dev/null
+	echo "Done"
+}
+
+
+
 downloadSaiku (){
 	# SAIKU
 
@@ -202,6 +213,24 @@ downloadSaiku (){
 		mv .tmp/target/saiku-* .tmp	
 	else
 		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.1.zip' -P .tmp -o /dev/null
+	fi
+	echo "Done"
+}
+
+
+downloadSaikuAdhoc (){
+	# SAIKU Adhoc
+
+	echo -n "Downloading Saiku Adhoc... "
+	#
+	#unzip .tmp/saiku/target.zip -d .tmp > /dev/null
+	# tamporarily switch for 2.1
+	if [ $BRANCH = 'dev' ]
+	then
+		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-adhoc-plugin/lastSuccessfulBuild/artifact/saiku-adhoc-plugin/target/*zip*/target.zip' -P .tmp/saiku-adhoc -o /dev/null
+		
+		unzip .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null		
+		mv .tmp/target/saiku-adhoc-* .tmp	
 	fi
 	echo "Done"
 }
@@ -262,12 +291,48 @@ installCGG (){
 	cp $CGG_DIR/batik-[^j]* $CGG_DIR/xml* $LIB_DIR
 }
 
+
+installCDC (){
+	rm -rf $SOLUTION_DIR/system/cdc
+	unzip  .tmp/dist/cdc-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+
+	# Changes to the server; 1 - Copy cda jar to cda lib
+	CDA_DIR=$SOLUTION_DIR/system/cda/lib
+	CDC_CDA_DIR=$SOLUTION_DIR/system/cdc/cda-lib
+	rm -rf $CDA_DIR/cdc-cda-*.jar
+	if [ -d  $CDA_DIR ]
+	then
+		cp $CDC_CDA_DIR/*.jar $CDA_DIR
+	fi
+	
+	# 2 - copy mondrian lib to WEB-INF
+	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
+	CDC_MONDRIAN_DIR=$SOLUTION_DIR/system/cdc/mondrian-lib
+	rm -rf $LIB_DIR/cdc-mondrian-*.jar	
+	cp $CDC_MONDRIAN_DIR/*.jar  $LIB_DIR
+	
+	# 3 - copy hazelcast to WEB-INF/lib
+	CDC_HAZELCAST_DIR=$SOLUTION_DIR/system/cdc/pentaho-lib
+	rm -rf $LIB_DIR/hazelcast-*.jar		
+	rm -rf $LIB_DIR/cdc-hazelcast-*.jar		
+	cp $CDC_HAZELCAST_DIR/*.jar  $LIB_DIR
+}
+
+
 installSaiku (){
 
 	rm -rf $SOLUTION_DIR/system/saiku
 	unzip  .tmp/saiku-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null	
 
 }
+
+installSaikuAdhoc (){
+
+	rm -rf $SOLUTION_DIR/system/saiku-adhoc
+	unzip  .tmp/saiku-adhoc-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null	
+
+}
+
 
 
 # read options for stuff to download/install
@@ -276,7 +341,9 @@ INSTALL_CDF=0
 INSTALL_CDA=0
 INSTALL_CDE=0
 INSTALL_CGG=0
+INSTALL_CDC=0
 INSTALL_SAIKU=0
+INSTALL_SAIKU_ADHOC=0
 
 if $ASSUME_YES; then
 	INSTALL_CDF=1
@@ -335,6 +402,25 @@ else
 	echo 'No webapp path provided, will not install CGG'
 fi
 
+if [[ $HAS_WEBAPP_PATH -eq 1 ]]
+then
+	if $ASSUME_YES; then
+		INSTALL_CDC=1
+	else
+		echo
+		echo -n "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
+		read -e answer
+		case $answer in
+		  [Yy]* ) INSTALL_CDC=1;;
+		  * ) ;;
+		esac
+	fi
+else
+	echo
+	echo 'No webapp path provided, will not install CDC'
+fi
+
+
 
 if $ASSUME_YES; then
 	INSTALL_SAIKU=1
@@ -349,13 +435,30 @@ else
 	esac
 fi
 
+if [ $BRANCH = 'dev' ]
+then		
+	if $ASSUME_YES; then
+		INSTALL_SAIKU_ADHOC=1
+	else
+		echo
+		echo -n "Install Saiku Adhoc? This will delete everything in $SOLUTION_DIR/system/saiku-adhoc. you sure? (y/N) "
+		read -e answer
+
+		case $answer in
+		  [Yy]* ) INSTALL_SAIKU_ADHOC=1;;
+		  * ) ;;
+		esac
+	fi				
+fi
+
+
 nothingToDo (){
 	echo Nothing to do. Exiting
 	cleanup
 	exit 1
 }
 
-[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_SAIKU -ne 0 ] || nothingToDo
+[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
 
 
 # downloading files
@@ -369,7 +472,9 @@ echo
 [ $INSTALL_CDA -eq 0 ] || downloadCDA
 [ $INSTALL_CDE -eq 0 ] || downloadCDE
 [ $INSTALL_CGG -eq 0 ] || downloadCGG
+[ $INSTALL_CDC -eq 0 ] || downloadCDC
 [ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
+[ $INSTALL_SAIKU_ADHOC -eq 0 ] || downloadSaikuAdhoc
 
 
 # installing files
@@ -382,7 +487,9 @@ echo
 [ $INSTALL_CDA -eq 0 ] || installCDA
 [ $INSTALL_CDE -eq 0 ] || installCDE
 [ $INSTALL_CGG -eq 0 ] || installCGG
+[ $INSTALL_CDC -eq 0 ] || installCDC
 [ $INSTALL_SAIKU -eq 0 ] || installSaiku
+[ $INSTALL_SAIKU_ADHOC -eq 0 ] || installSaikuAdhoc
 
 
 
