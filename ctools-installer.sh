@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.14'
+VER='1.15'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.15 - Change to CDF samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
 echo v1.14 - Added support for CDF stable \(release\) installations.
 echo v1.13 - Fixed issue in CGG download
 echo v1.12 - Fixed typo in -Y option
@@ -211,8 +212,27 @@ downloadSaiku (){
 installCDF (){
 	rm -rf $SOLUTION_DIR/system/pentaho-cdf
 	rm -rf $SOLUTION_DIR/bi-developers/cdf-samples	
+	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
+
+	if [ $BRANCH = 'dev' ]
+	then	
+		if [ ! -d  $SOLUTION_DIR/plugin-samples ]
+		then
+			mkdir $SOLUTION_DIR/plugin-samples
+		fi
+		if [ ! -f  $SOLUTION_DIR/plugin-samples/index.xml ]
+		then
+		    echo '<index><visible>true</visible><name>Plugin Samples</name><description>Plugin Samples</description></index>' > $SOLUTION_DIR/plugin-samples/index.xml
+		fi		
+	fi
+	
 	unzip  .tmp/dist/pentaho-cdf$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
-	unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/ > /dev/null
+	if [ $BRANCH = 'dev' ]
+	then
+		unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
+	else
+		unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/ > /dev/null	
+	fi
 }
 
 installCDE (){
