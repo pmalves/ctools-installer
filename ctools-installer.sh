@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.16'
+VER='1.17'
 
 echo
 echo CTOOLS
@@ -15,7 +15,8 @@ echo
 echo 
 echo Changelog:
 echo
-echo v1.16 - Added support for CDC and Saiku-adhoc \(only for trunk/dev\) installation.
+echo v1.17 - Change to CDA samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
+echo v1.16 - Added support for CDC and Saiku-adhoc installation - for now only available in dev/trunk mode.
 echo v1.15 - Change to CDF samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
 echo v1.14 - Added support for CDF stable \(release\) installations.
 echo v1.13 - Fixed issue in CGG download
@@ -237,12 +238,7 @@ downloadSaikuAdhoc (){
 
 
 # Define install functions
-
-installCDF (){
-	rm -rf $SOLUTION_DIR/system/pentaho-cdf
-	rm -rf $SOLUTION_DIR/bi-developers/cdf-samples	
-	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
-
+setupSamples() {
 	if [ $BRANCH = 'dev' ]
 	then	
 		if [ ! -d  $SOLUTION_DIR/plugin-samples ]
@@ -254,6 +250,16 @@ installCDF (){
 		    echo '<index><visible>true</visible><name>Plugin Samples</name><description>Plugin Samples</description></index>' > $SOLUTION_DIR/plugin-samples/index.xml
 		fi		
 	fi
+
+}
+
+
+installCDF (){
+	rm -rf $SOLUTION_DIR/system/pentaho-cdf
+	rm -rf $SOLUTION_DIR/bi-developers/cdf-samples	
+	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
+
+	setupSamples
 	
 	unzip  .tmp/dist/pentaho-cdf$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 	if [ $BRANCH = 'dev' ]
@@ -272,11 +278,19 @@ installCDE (){
 }
 
 installCDA (){
-
 	rm -rf $SOLUTION_DIR/system/cda
 	rm -rf $SOLUTION_DIR/bi-developers/cda
+	rm -rf $SOLUTION_DIR/plugin-samples/cda
+		
+	setupSamples	
+	
 	unzip  .tmp/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
-	unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/ > /dev/null
+	if [ $BRANCH = 'dev' ]
+	then	
+		unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
+	else
+		unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/ > /dev/null	
+	fi
 }
 
 installCGG (){
@@ -402,24 +416,26 @@ else
 	echo 'No webapp path provided, will not install CGG'
 fi
 
-if [[ $HAS_WEBAPP_PATH -eq 1 ]]
-then
-	if $ASSUME_YES; then
-		INSTALL_CDC=1
+if [ $BRANCH = 'dev' ]
+then	
+	if [[ $HAS_WEBAPP_PATH -eq 1 ]]
+	then
+		if $ASSUME_YES; then
+			INSTALL_CDC=1
+		else
+			echo
+			echo -n "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
+			read -e answer
+			case $answer in
+			  [Yy]* ) INSTALL_CDC=1;;
+			  * ) ;;
+			esac
+		fi
 	else
 		echo
-		echo -n "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
-		read -e answer
-		case $answer in
-		  [Yy]* ) INSTALL_CDC=1;;
-		  * ) ;;
-		esac
+		echo 'No webapp path provided, will not install CDC'
 	fi
-else
-	echo
-	echo 'No webapp path provided, will not install CDC'
 fi
-
 
 
 if $ASSUME_YES; then
