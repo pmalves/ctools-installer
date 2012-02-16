@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.17'
+VER='1.18'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.18 - CDA samples installation to plugin-samples also in stable mode.
 echo v1.17 - Change to CDA and CDE samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
 echo v1.16 - Added support for CDC and Saiku-adhoc installation - for now only available in dev/trunk mode.
 echo v1.15 - Change to CDF samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
@@ -287,13 +288,8 @@ installCDA (){
 	
 	
 	unzip  .tmp/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
-	if [ $BRANCH = 'dev' ]
-	then	
-		setupSamples	
-		unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
-	else
-		unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/ > /dev/null	
-	fi
+	setupSamples	
+	unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
 }
 
 installCGG (){
