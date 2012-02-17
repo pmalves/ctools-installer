@@ -309,22 +309,15 @@ installCDC (){
 	rm -rf $SOLUTION_DIR/system/cdc
 	unzip  .tmp/dist/cdc-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
 
-	# Changes to the server; 1 - Copy cda jar to cda lib
-	CDA_DIR=$SOLUTION_DIR/system/cda/lib
-	CDC_CDA_DIR=$SOLUTION_DIR/system/cdc/cda-lib
-	rm -rf $CDA_DIR/cdc-cda-*.jar
-	if [ -d  $CDA_DIR ]
-	then
-		cp $CDC_CDA_DIR/*.jar $CDA_DIR
-	fi
+	# Changes to the server; 
 	
-	# 2 - copy mondrian lib to WEB-INF
+	# 1 - copy mondrian lib to WEB-INF
 	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
 	CDC_MONDRIAN_DIR=$SOLUTION_DIR/system/cdc/mondrian-lib
 	rm -rf $LIB_DIR/cdc-mondrian-*.jar	
 	cp $CDC_MONDRIAN_DIR/*.jar  $LIB_DIR
 	
-	# 3 - copy hazelcast to WEB-INF/lib
+	# 2 - copy hazelcast to WEB-INF/lib
 	CDC_HAZELCAST_DIR=$SOLUTION_DIR/system/cdc/pentaho-lib
 	rm -rf $LIB_DIR/hazelcast-*.jar		
 	rm -rf $LIB_DIR/cdc-hazelcast-*.jar		
@@ -415,7 +408,8 @@ else
 	echo 'No webapp path provided, will not install CGG'
 fi
 
-if [ $BRANCH = 'dev' ]
+#if [ $BRANCH = 'dev' ]
+if false;
 then	
 	if [[ $HAS_WEBAPP_PATH -eq 1 ]]
 	then
