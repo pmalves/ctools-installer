@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.18'
+VER='1.19'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.19 - Corrected installCDF and installCDE to remove samples dir before installing
 echo v1.18 - CDA samples installation to plugin-samples also in stable mode.
 echo v1.17 - Change to CDA and CDE samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
 echo v1.16 - Added support for CDC and Saiku-adhoc installation - for now only available in dev/trunk mode.
@@ -254,8 +255,11 @@ setupSamples() {
 
 installCDF (){
 	rm -rf $SOLUTION_DIR/system/pentaho-cdf
+
+	# Removing samples dir. First two are deprecated
 	rm -rf $SOLUTION_DIR/bi-developers/cdf-samples	
 	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
+	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf
 
 
 	
@@ -271,8 +275,11 @@ installCDF (){
 
 installCDE (){
 	rm -rf $SOLUTION_DIR/system/pentaho-cdf-dd
+
+	# Removing samples dir. First two are deprecated
 	rm -rf $SOLUTION_DIR/cde_sample
 	rm -rf $SOLUTION_DIR/plugin-samples/cde_sample
+	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf-dd
 	
 
 	unzip  .tmp/dist/pentaho-cdf-dd-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
@@ -282,6 +289,8 @@ installCDE (){
 
 installCDA (){
 	rm -rf $SOLUTION_DIR/system/cda
+
+	# Removing samples dir. First is deprecated
 	rm -rf $SOLUTION_DIR/bi-developers/cda
 	rm -rf $SOLUTION_DIR/plugin-samples/cda
 		
