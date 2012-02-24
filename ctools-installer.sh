@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.19'
+VER='1.20'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.20 - CDF new samples location updated to stable installation.
 echo v1.19 - Corrected installCDF and installCDE to remove samples dir before installing
 echo v1.18 - CDA samples installation to plugin-samples also in stable mode.
 echo v1.17 - Change to CDA and CDE samples installation. Now installs to folder plugin-samples instead of bi-developers \(for trunk snapshot only\).
@@ -261,16 +262,10 @@ installCDF (){
 	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
 	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf
 
-
 	
 	unzip  .tmp/dist/pentaho-cdf$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
-	if [ $BRANCH = 'dev' ]
-	then
-		setupSamples
-		unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
-	else
-		unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/ > /dev/null	
-	fi
+	setupSamples
+	unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
 }
 
 installCDE (){
