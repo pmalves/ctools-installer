@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.21'
+VER='1.22'
 
 echo
 echo CTOOLS
