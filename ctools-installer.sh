@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.22 - Changed saiku download path to 2.2
 echo v1.21 - Added support for CDE stable \(release\) installations.
 echo v1.20 - CDF new samples location updated to stable installation.
 echo v1.19 - Corrected installCDF and installCDE to remove samples dir before installing
@@ -217,7 +218,7 @@ downloadSaiku (){
 		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-* .tmp	
 	else
-		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.1.zip' -P .tmp -o /dev/null
+		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.2.zip' -P .tmp -o /dev/null
 	fi
 	echo "Done"
 }
