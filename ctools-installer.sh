@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.20'
+VER='1.21'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.21 - Added support for CDE stable \(release\) installations.
 echo v1.20 - CDF new samples location updated to stable installation.
 echo v1.19 - Corrected installCDF and installCDE to remove samples dir before installing
 echo v1.18 - CDA samples installation to plugin-samples also in stable mode.
@@ -180,7 +181,7 @@ downloadCDA (){
 downloadCDE (){
 	# CDE
 	echo -n "Downloading CDE... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDE/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
 	unzip .tmp/cde/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
@@ -277,9 +278,9 @@ installCDE (){
 	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf-dd
 	
 
-	unzip  .tmp/dist/pentaho-cdf-dd-TRUNK-*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/pentaho-cdf-dd$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 	setupSamples	
-	unzip  .tmp/dist/pentaho-cdf-dd-solution-TRUNK-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
+	unzip  .tmp/dist/pentaho-cdf-dd-solution$FILESUFIX*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
 }
 
 installCDA (){
