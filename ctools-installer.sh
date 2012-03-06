@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.22'
+VER='1.23'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.23 - CDF trunk installation change due to js publish
 echo v1.22 - Changed saiku download path to 2.2
 echo v1.21 - Added support for CDE stable \(release\) installations.
 echo v1.20 - CDF new samples location updated to stable installation.
@@ -133,7 +134,7 @@ FILESUFIX='-??.??.??'
 if [ $BRANCH = 'dev' ]
 then
 	URL1=''
-	FILESUFIX='-TRUNK'
+	FILESUFIX='-TRUNK-SNAPSHOT'
 fi
 
 
@@ -265,7 +266,7 @@ installCDF (){
 	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf
 
 	
-	unzip  .tmp/dist/pentaho-cdf$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/pentaho-cdf$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
 	setupSamples
 	unzip .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
 }
