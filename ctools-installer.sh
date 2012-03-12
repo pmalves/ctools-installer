@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.24'
+VER='1.25'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.25 - Removed overwrite, explicitly deleting marketplace definition
 echo v1.24 - Added force overwrite to unzip to phase out overwrite confirmation
 echo v1.23 - CDF trunk installation change due to js publish
 echo v1.22 - Changed saiku download path to 2.2
@@ -165,7 +166,8 @@ downloadCDF (){
 	URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'	
 	echo -n "Downloading CDF... "
 	wget --no-check-certificate $URL -P .tmp/dist/ -o /dev/null	
-	unzip -o .tmp/dist/dist.zip -d .tmp > /dev/null
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/dist/dist.zip -d .tmp > /dev/null
 	echo "Done"
 
 }
@@ -176,7 +178,8 @@ downloadCDA (){
 	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'	
 	echo -n "Downloading CDA... "
 	wget --no-check-certificate $URL -P .tmp/cda -o /dev/null
-	unzip -o .tmp/cda/dist.zip  -d .tmp > /dev/null
+	rm -f .tmp/dist/marketplace.xml	
+	unzip .tmp/cda/dist.zip  -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -185,7 +188,8 @@ downloadCDE (){
 	# CDE
 	echo -n "Downloading CDE... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
-	unzip -o .tmp/cde/dist.zip -d .tmp > /dev/null
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/cde/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -193,7 +197,8 @@ downloadCGG (){
 	# CGG
 	echo -n "Downloading CGG... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CGG/lastSuccessfulBuild/artifact/*zip*/archive.zip' -P .tmp/cgg -o /dev/null
-	unzip -o .tmp/cgg/archive.zip -d .tmp > /dev/null
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/cgg/archive.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -201,7 +206,8 @@ downloadCDC (){
 	# CDC
 	echo -n "Downloading CDC... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDC/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdc -o /dev/null
-	unzip -o .tmp/cdc/dist.zip -d .tmp > /dev/null
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/cdc/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -217,7 +223,8 @@ downloadSaiku (){
 	if [ $BRANCH = 'dev' ]
 	then
 		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip' -P .tmp/saiku -o /dev/null
-		unzip -o .tmp/saiku/target.zip -d .tmp > /dev/null		
+		rm -f .tmp/dist/marketplace.xml
+		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-* .tmp	
 	else
 		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.2.zip' -P .tmp -o /dev/null
@@ -236,8 +243,8 @@ downloadSaikuAdhoc (){
 	if [ $BRANCH = 'dev' ]
 	then
 		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-adhoc-plugin/lastSuccessfulBuild/artifact/saiku-adhoc-plugin/target/*zip*/target.zip' -P .tmp/saiku-adhoc -o /dev/null
-		
-		unzip -o .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null		
+		rm -f .tmp/dist/marketplace.xml		
+		unzip .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-adhoc-* .tmp	
 	fi
 	echo "Done"
