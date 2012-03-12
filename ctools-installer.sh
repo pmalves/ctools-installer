@@ -169,7 +169,7 @@ if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
   fi
 
   case $answer in
-	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerunning..."; echo "attempting to run '$0 $ORIGINAL_CMDS'"; /bin/bash $0 $ORIGINAL_CMDS; exit 0;;
+	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successful. Rerunning command '$0 $ORIGINAL_CMDS'"; /bin/bash $0 $ORIGINAL_CMDS; exit 0;;
   esac
 
 fi
