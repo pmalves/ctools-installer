@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.25'
+VER='1.26'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.26 - -y flag now also works for ctools-installer update. ctools-installer update is now automated - Thanks to Mark Reid.
 echo v1.25 - Removed overwrite, explicitly deleting marketplace definition
 echo v1.24 - Added force overwrite to unzip to phase out overwrite confirmation
 echo v1.23 - CDF trunk installation change due to js publish
