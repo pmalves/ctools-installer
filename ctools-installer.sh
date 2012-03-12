@@ -80,6 +80,8 @@ HAS_WEBAPP_PATH=0
 BRANCH='stable'
 ASSUME_YES=false
 
+ORIGINAL_CMDS=$@
+
 while [ $# -gt 0 ]
 do
     case "$1" in
@@ -131,6 +133,15 @@ then
 
 fi
 
+for reqcmd in unzip wget
+do
+  if [[ -z "$(which $reqcmd)" ]]
+  then
+    echo "ERROR: Missing required '$reqcmd' command."
+    exit 1
+  fi
+done
+
 URL1='-release'
 FILESUFIX='-??.??.??'
 if [ $BRANCH = 'dev' ]
@@ -148,12 +159,17 @@ mkdir -p .tmp/dist
 wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
 if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
-  echo
-  echo -n "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
-  read -e answer
+  answer=n
+  if $ASSUME_YES ; then
+    answer=y
+  else
+    echo
+    echo -n "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
+    read -e answer
+  fi
 
   case $answer in
-	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerun"; exit 0;;
+	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successfull. Rerunning..."; echo "attempting to run '$0 $ORIGINAL_CMDS'"; /bin/bash $0 $ORIGINAL_CMDS; exit 0;;
   esac
 
 fi
