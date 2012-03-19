@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.26'
+VER='1.27'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.27 - Added support for CGG stable \( release \) installations.
 echo v1.26 - -y flag now also works for ctools-installer update. ctools-installer update is now automated - Thanks to Mark Reid.
 echo v1.25 - Removed overwrite, explicitly deleting marketplace definition
 echo v1.24 - Added force overwrite to unzip to phase out overwrite confirmation
@@ -213,9 +214,9 @@ downloadCDE (){
 downloadCGG (){
 	# CGG
 	echo -n "Downloading CGG... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CGG/lastSuccessfulBuild/artifact/*zip*/archive.zip' -P .tmp/cgg -o /dev/null
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip' -P .tmp/cgg -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
-	unzip .tmp/cgg/archive.zip -d .tmp > /dev/null
+	unzip .tmp/cgg/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -326,7 +327,7 @@ installCDA (){
 
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
-	unzip  .tmp/archive/dist/cgg-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/archive/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
