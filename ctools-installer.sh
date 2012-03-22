@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.27'
+VER='1.28'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.28 - Support for CGG in 4.5, where webapp path is no longer required
 echo v1.27 - Added support for CGG stable \( release \) installations.
 echo v1.26 - -y flag now also works for ctools-installer update. ctools-installer update is now automated - Thanks to Mark Reid.
 echo v1.25 - Removed overwrite, explicitly deleting marketplace definition
@@ -58,7 +59,7 @@ usage (){
 	echo "Usage: ctools-installer.sh -s solutionPath [-w pentahoWebapPath] [-b branch]"
 	echo
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
-	echo "-w    Pentaho webapp server path (requiresd for cgg, eg: /biserver-ce/tomcat/webapps/pentaho)"
+	echo "-w    Pentaho webapp server path (required for cgg on versions before 4.5. eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
 	echo "-y    Assume yes to all prompts"
 	echo "-h    This help screen"
@@ -330,11 +331,19 @@ installCGG (){
 	unzip  .tmp/archive/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
-	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
-	CGG_DIR=$SOLUTION_DIR/system/cgg/lib
 
-	rm -rf $LIB_DIR/batik-* $LIB_DIR/xml-apis* $LIB_DIR/xmlgraphics*
-	cp $CGG_DIR/batik-[^j]* $CGG_DIR/xml* $LIB_DIR
+	if [[ $HAS_WEBAPP_PATH -eq 1 ]]
+	then
+		LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
+		CGG_DIR=$SOLUTION_DIR/system/cgg/lib
+
+		rm -rf $LIB_DIR/batik-* $LIB_DIR/xml-apis* $LIB_DIR/xmlgraphics*
+		cp $CGG_DIR/batik-[^j]* $CGG_DIR/xml* $LIB_DIR
+
+	else
+		echo
+		echo ' [CGG] No webapp path provided, if you are using pentaho older than 4.5 cgg will not work properly)'
+	fi
 }
 
 
@@ -423,8 +432,6 @@ else
 	esac
 fi
 
-if [[ $HAS_WEBAPP_PATH -eq 1 ]]
-then
 	if $ASSUME_YES; then
 		INSTALL_CGG=1
 	else
@@ -436,10 +443,7 @@ then
 		  * ) ;;
 		esac
 	fi
-else
-	echo
-	echo 'No webapp path provided, will not install CGG'
-fi
+
 
 #if [ $BRANCH = 'dev' ]
 if false;
