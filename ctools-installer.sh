@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.29 - Changed saiku download path to 2.3
 echo v1.28 - Support for CGG in 4.5, where webapp path is no longer required
 echo v1.27 - Added support for CGG stable \( release \) installations.
 echo v1.26 - -y flag now also works for ctools-installer update. ctools-installer update is now automated - Thanks to Mark Reid.
@@ -246,7 +247,7 @@ downloadSaiku (){
 		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-* .tmp	
 	else
-		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.2.zip' -P .tmp -o /dev/null
+		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.3.zip' -P .tmp -o /dev/null
 	fi
 	echo "Done"
 }
