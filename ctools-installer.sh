@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.28'
+VER='1.30'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.30 - Support for CDC installation using -b dev switch
 echo v1.29 - Changed saiku download path to 2.3
 echo v1.28 - Support for CGG in 4.5, where webapp path is no longer required
 echo v1.27 - Added support for CGG stable \( release \) installations.
@@ -354,13 +355,8 @@ installCDC (){
 
 	# Changes to the server; 
 	
-	# 1 - copy mondrian lib to WEB-INF
+	# 1 - copy hazelcast to WEB-INF/lib
 	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
-	CDC_MONDRIAN_DIR=$SOLUTION_DIR/system/cdc/mondrian-lib
-	rm -rf $LIB_DIR/cdc-mondrian-*.jar	
-	cp $CDC_MONDRIAN_DIR/*.jar  $LIB_DIR
-	
-	# 2 - copy hazelcast to WEB-INF/lib
 	CDC_HAZELCAST_DIR=$SOLUTION_DIR/system/cdc/pentaho-lib
 	rm -rf $LIB_DIR/hazelcast-*.jar		
 	rm -rf $LIB_DIR/cdc-hazelcast-*.jar		
@@ -446,8 +442,7 @@ fi
 	fi
 
 
-#if [ $BRANCH = 'dev' ]
-if false;
+if [ $BRANCH = 'dev' ]
 then	
 	if [[ $HAS_WEBAPP_PATH -eq 1 ]]
 	then
