@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.30'
+VER='1.31'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.31 - Support for CDB installation using -b dev switch
 echo v1.30 - Support for CDC installation using -b dev switch
 echo v1.29 - Changed saiku download path to 2.3
 echo v1.28 - Support for CGG in 4.5, where webapp path is no longer required
@@ -232,6 +233,15 @@ downloadCDC (){
 	echo "Done"
 }
 
+downloadCDB (){
+	# CDB
+	echo -n "Downloading CDB... "
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDB/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdb -o /dev/null
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/cdb/dist.zip -d .tmp > /dev/null
+	echo "Done"
+}
+
 
 
 downloadSaiku (){
@@ -364,6 +374,13 @@ installCDC (){
 }
 
 
+installCDB (){
+	rm -rf $SOLUTION_DIR/system/cdb
+	unzip  .tmp/dist/cdb-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+}
+
+
+
 installSaiku (){
 
 	rm -rf $SOLUTION_DIR/system/saiku
@@ -387,6 +404,7 @@ INSTALL_CDA=0
 INSTALL_CDE=0
 INSTALL_CGG=0
 INSTALL_CDC=0
+INSTALL_CDB=0
 INSTALL_SAIKU=0
 INSTALL_SAIKU_ADHOC=0
 
@@ -463,6 +481,24 @@ then
 	fi
 fi
 
+if [ $BRANCH = 'dev' ]
+then		
+	if $ASSUME_YES; then
+		INSTALL_CDB=1
+	else
+		echo
+		echo -n "Install CDB? This will delete everything in $SOLUTION_DIR/system/cdb. you sure? (y/N) "
+		read -e answer
+
+		case $answer in
+		  [Yy]* ) INSTALL_CDB=1;;
+		  * ) ;;
+		esac
+	fi				
+fi
+
+
+
 
 if $ASSUME_YES; then
 	INSTALL_SAIKU=1
@@ -500,7 +536,7 @@ nothingToDo (){
 	exit 1
 }
 
-[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
+[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
 
 
 # downloading files
@@ -515,6 +551,7 @@ echo
 [ $INSTALL_CDE -eq 0 ] || downloadCDE
 [ $INSTALL_CGG -eq 0 ] || downloadCGG
 [ $INSTALL_CDC -eq 0 ] || downloadCDC
+[ $INSTALL_CDB -eq 0 ] || downloadCDB
 [ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
 [ $INSTALL_SAIKU_ADHOC -eq 0 ] || downloadSaikuAdhoc
 
@@ -530,6 +567,7 @@ echo
 [ $INSTALL_CDE -eq 0 ] || installCDE
 [ $INSTALL_CGG -eq 0 ] || installCGG
 [ $INSTALL_CDC -eq 0 ] || installCDC
+[ $INSTALL_CDB -eq 0 ] || installCDB
 [ $INSTALL_SAIKU -eq 0 ] || installSaiku
 [ $INSTALL_SAIKU_ADHOC -eq 0 ] || installSaikuAdhoc
 
