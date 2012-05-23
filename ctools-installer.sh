@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.32 - Added windows cr tolerance for this script\'s auto update
 echo v1.31 - Support for CDB installation using -b dev switch
 echo v1.30 - Support for CDC installation using -b dev switch
 echo v1.29 - Changed saiku download path to 2.3
@@ -164,7 +165,7 @@ mkdir -p .tmp/dist
 
 wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
 
-if ! diff $0 .tmp/ctools-installer.sh >/dev/null ; then
+if ! diff --strip-trailing-cr $0 .tmp/ctools-installer.sh >/dev/null ; then
   answer=n
   if $ASSUME_YES ; then
     answer=y
