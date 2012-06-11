@@ -519,21 +519,19 @@ else
 	esac
 fi
 
-#if [ $BRANCH = 'dev' ]
-#then		
-	if $ASSUME_YES; then
-		INSTALL_SAIKU_ADHOC=1
-	else
-		echo
-		echo -n "Install Saiku Adhoc? This will delete everything in $SOLUTION_DIR/system/saiku-adhoc. you sure? (y/N) "
-		read -e answer
+if $ASSUME_YES; then
+    INSTALL_SAIKU_ADHOC=1
+else
+    echo
+	echo -n "Install Saiku Adhoc? This will delete everything in $SOLUTION_DIR/system/saiku-adhoc. you sure? (y/N) "
+	read -e answer
 
-		case $answer in
-		  [Yy]* ) INSTALL_SAIKU_ADHOC=1;;
-		  * ) ;;
-		esac
-	fi				
-#fi
+	case $answer in
+	    [Yy]* ) INSTALL_SAIKU_ADHOC=1;;
+        * ) ;;
+    esac
+fi				
+
 
 
 nothingToDo (){
