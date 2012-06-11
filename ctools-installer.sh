@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.31'
+VER='1.33'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.33 - Added support for Saiku ad hoc stable \(release\) installations.
 echo v1.32 - Added windows cr tolerance for this script\'s auto update
 echo v1.31 - Support for CDB installation using -b dev switch
 echo v1.30 - Support for CDC installation using -b dev switch
@@ -278,7 +279,11 @@ downloadSaikuAdhoc (){
 		rm -f .tmp/dist/marketplace.xml		
 		unzip .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-adhoc-* .tmp	
-	fi
+		
+	else
+        wget --no-check-certificate 'https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip' -P .tmp/ -o /dev/null
+    fi
+
 	echo "Done"
 }
 
@@ -514,8 +519,8 @@ else
 	esac
 fi
 
-if [ $BRANCH = 'dev' ]
-then		
+#if [ $BRANCH = 'dev' ]
+#then		
 	if $ASSUME_YES; then
 		INSTALL_SAIKU_ADHOC=1
 	else
@@ -528,7 +533,7 @@ then
 		  * ) ;;
 		esac
 	fi				
-fi
+#fi
 
 
 nothingToDo (){
