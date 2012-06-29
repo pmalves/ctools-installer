@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.33'
+VER='1.34'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.31 - Support for CDV installation using -b dev switch
 echo v1.33 - Added support for Saiku ad hoc stable \(release\) installations.
 echo v1.32 - Added windows cr tolerance for this script\'s auto update
 echo v1.31 - Support for CDB installation using -b dev switch
@@ -244,6 +245,16 @@ downloadCDB (){
 	echo "Done"
 }
 
+downloadCDV (){
+	# CDV
+	echo -n "Downloading CDV... "
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDV/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdv -o /dev/null
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/cdv/dist.zip -d .tmp > /dev/null
+	echo "Done"
+}
+
+
 
 
 downloadSaiku (){
@@ -386,6 +397,12 @@ installCDB (){
 }
 
 
+installCDV (){
+	rm -rf $SOLUTION_DIR/system/cdv
+	unzip  .tmp/dist/cdv-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+}
+
+
 
 installSaiku (){
 
@@ -411,6 +428,7 @@ INSTALL_CDE=0
 INSTALL_CGG=0
 INSTALL_CDC=0
 INSTALL_CDB=0
+INSTALL_CDV=0
 INSTALL_SAIKU=0
 INSTALL_SAIKU_ADHOC=0
 
@@ -503,6 +521,21 @@ then
 	fi				
 fi
 
+if [ $BRANCH = 'dev' ]
+then		
+	if $ASSUME_YES; then
+		INSTALL_CDV=1
+	else
+		echo
+		echo -n "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
+		read -e answer
+
+		case $answer in
+		  [Yy]* ) INSTALL_CDV=1;;
+		  * ) ;;
+		esac
+	fi				
+fi
 
 
 
@@ -540,7 +573,7 @@ nothingToDo (){
 	exit 1
 }
 
-[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
+[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ] || [ $INSTALL_CDV -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
 
 
 # downloading files
@@ -556,6 +589,7 @@ echo
 [ $INSTALL_CGG -eq 0 ] || downloadCGG
 [ $INSTALL_CDC -eq 0 ] || downloadCDC
 [ $INSTALL_CDB -eq 0 ] || downloadCDB
+[ $INSTALL_CDV -eq 0 ] || downloadCDV
 [ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
 [ $INSTALL_SAIKU_ADHOC -eq 0 ] || downloadSaikuAdhoc
 
@@ -572,6 +606,7 @@ echo
 [ $INSTALL_CGG -eq 0 ] || installCGG
 [ $INSTALL_CDC -eq 0 ] || installCDC
 [ $INSTALL_CDB -eq 0 ] || installCDB
+[ $INSTALL_CDV -eq 0 ] || installCDV
 [ $INSTALL_SAIKU -eq 0 ] || installSaiku
 [ $INSTALL_SAIKU_ADHOC -eq 0 ] || installSaikuAdhoc
 
