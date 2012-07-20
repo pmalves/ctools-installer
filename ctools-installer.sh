@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.34'
+VER='1.35'
 
 echo
 echo CTOOLS
@@ -15,7 +15,8 @@ echo
 echo 
 echo Changelog:
 echo
-echo v1.31 - Support for CDV installation using -b dev switch
+echo v1.35 - Support for stable CDV, CDC and CDB installation
+echo v1.34 - Support for CDV installation using -b dev switch
 echo v1.33 - Added support for Saiku ad hoc stable \(release\) installations.
 echo v1.32 - Added windows cr tolerance for this script\'s auto update
 echo v1.31 - Support for CDB installation using -b dev switch
@@ -230,7 +231,7 @@ downloadCGG (){
 downloadCDC (){
 	# CDC
 	echo -n "Downloading CDC... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDC/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdc -o /dev/null
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDC'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdc -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdc/dist.zip -d .tmp > /dev/null
 	echo "Done"
@@ -239,7 +240,7 @@ downloadCDC (){
 downloadCDB (){
 	# CDB
 	echo -n "Downloading CDB... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDB/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdb -o /dev/null
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDB'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdb -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdb/dist.zip -d .tmp > /dev/null
 	echo "Done"
@@ -248,7 +249,7 @@ downloadCDB (){
 downloadCDV (){
 	# CDV
 	echo -n "Downloading CDV... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDV/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdv -o /dev/null
+	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDV'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdv -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdv/dist.zip -d .tmp > /dev/null
 	echo "Done"
@@ -378,7 +379,7 @@ installCGG (){
 
 installCDC (){
 	rm -rf $SOLUTION_DIR/system/cdc
-	unzip  .tmp/dist/cdc-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/cdc$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 
 	# Changes to the server; 
 	
@@ -393,13 +394,13 @@ installCDC (){
 
 installCDB (){
 	rm -rf $SOLUTION_DIR/system/cdb
-	unzip  .tmp/dist/cdb-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/cdb$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 }
 
 
 installCDV (){
 	rm -rf $SOLUTION_DIR/system/cdv
-	unzip  .tmp/dist/cdv-TRUNK-SNAP*zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip  .tmp/dist/cdv$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 }
 
 
@@ -484,58 +485,53 @@ fi
 	fi
 
 
-if [ $BRANCH = 'dev' ]
-then	
-	if [[ $HAS_WEBAPP_PATH -eq 1 ]]
-	then
-		if $ASSUME_YES; then
-			INSTALL_CDC=1
-		else
-			echo
-			echo -n "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
-			read -e answer
-			case $answer in
-			  [Yy]* ) INSTALL_CDC=1;;
-			  * ) ;;
-			esac
-		fi
-	else
-		echo
-		echo 'No webapp path provided, will not install CDC'
-	fi
-fi
 
-if [ $BRANCH = 'dev' ]
-then		
+if [[ $HAS_WEBAPP_PATH -eq 1 ]] 
+then
 	if $ASSUME_YES; then
-		INSTALL_CDB=1
-	else
+        INSTALL_CDC=1
+    else
 		echo
-		echo -n "Install CDB? This will delete everything in $SOLUTION_DIR/system/cdb. you sure? (y/N) "
+		echo -n "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
 		read -e answer
-
-		case $answer in
-		  [Yy]* ) INSTALL_CDB=1;;
-		  * ) ;;
-		esac
-	fi				
+        case $answer in
+			[Yy]* ) INSTALL_CDC=1;;
+		    * ) ;;
+	    esac
+    fi
+else
+	echo
+    echo 'No webapp path provided, will not install CDC'
 fi
 
-if [ $BRANCH = 'dev' ]
-then		
-	if $ASSUME_YES; then
-		INSTALL_CDV=1
-	else
-		echo
-		echo -n "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
-		read -e answer
 
-		case $answer in
-		  [Yy]* ) INSTALL_CDV=1;;
-		  * ) ;;
-		esac
-	fi				
-fi
+if $ASSUME_YES; then
+    INSTALL_CDB=1
+else
+    echo
+	echo -n "Install CDB? This will delete everything in $SOLUTION_DIR/system/cdb. you sure? (y/N) "
+	read -e answer
+
+	case $answer in
+	    [Yy]* ) INSTALL_CDB=1;;
+		* ) ;;
+    esac
+fi				
+
+
+if $ASSUME_YES; then
+    INSTALL_CDV=1
+else
+    echo
+	echo -n "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
+	read -e answer
+
+	case $answer in
+	    [Yy]* ) INSTALL_CDV=1;;
+		* ) ;;
+    esac
+fi				
+
 
 
 
