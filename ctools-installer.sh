@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.35'
+VER='1.36'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.36 - CDV now installs samples too
 echo v1.35 - Support for stable CDV, CDC and CDB installation
 echo v1.34 - Support for CDV installation using -b dev switch
 echo v1.33 - Added support for Saiku ad hoc stable \(release\) installations.
@@ -401,6 +402,8 @@ installCDB (){
 installCDV (){
 	rm -rf $SOLUTION_DIR/system/cdv
 	unzip  .tmp/dist/cdv$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	setupSamples
+	unzip .tmp/dist/cdv-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
 }
 
 
