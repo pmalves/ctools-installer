@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.38 - Added option -n for CBF integration
 echo v1.37 - plugin-samples/cdv was not deleted. Fixed
 echo v1.36 - CDV now installs samples too
 echo v1.35 - Support for stable CDV, CDC and CDB installation
@@ -71,6 +72,7 @@ usage (){
 	echo "-w    Pentaho webapp server path (required for cgg on versions before 4.5. eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
 	echo "-y    Assume yes to all prompts"
+	echo "-n    Add newline to end of prompts (for integration with CBF)"
 	echo "-h    This help screen"
 	echo
 	exit 1
@@ -90,6 +92,7 @@ SOLUTION_DIR='PATH'				# Variable name
 WEBAPP_PATH='PATH'					# Show all matches (y/n)?
 HAS_WEBAPP_PATH=0
 BRANCH='stable'
+ECHO_FLAG='-n'
 ASSUME_YES=false
 
 ORIGINAL_CMDS=$@
@@ -100,8 +103,9 @@ do
 	--)	shift; break;;
 	-s)	SOLUTION_DIR="$2"; shift;;
 	-w)	WEBAPP_PATH="$2"; shift;;
-	-b)   BRANCH="$2"; shift;;
+	-b) BRANCH="$2"; shift;;
 	-y)	ASSUME_YES=true;;
+	-n)	ECHO_FLAG='';;
 	--)	break;;
 	-*|-h)	usage ;;
     esac
@@ -176,8 +180,8 @@ if ! diff --strip-trailing-cr $0 .tmp/ctools-installer.sh >/dev/null ; then
     answer=y
   else
     echo
-    echo -n "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
-    read -e answer
+    echo $ECHO_FLAG "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
+    read -e answer < /dev/tty
   fi
 
   case $answer in
@@ -192,7 +196,7 @@ downloadCDF (){
 
 	# CDF
 	URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'	
-	echo -n "Downloading CDF... "
+	echo $ECHO_FLAG "Downloading CDF... "
 	wget --no-check-certificate $URL -P .tmp/dist/ -o /dev/null	
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/dist/dist.zip -d .tmp > /dev/null
@@ -204,7 +208,7 @@ downloadCDF (){
 downloadCDA (){
 	# CDA
 	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'	
-	echo -n "Downloading CDA... "
+	echo $ECHO_FLAG "Downloading CDA... "
 	wget --no-check-certificate $URL -P .tmp/cda -o /dev/null
 	rm -f .tmp/dist/marketplace.xml	
 	unzip .tmp/cda/dist.zip  -d .tmp > /dev/null
@@ -214,7 +218,7 @@ downloadCDA (){
 
 downloadCDE (){
 	# CDE
-	echo -n "Downloading CDE... "
+	echo $ECHO_FLAG "Downloading CDE... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cde/dist.zip -d .tmp > /dev/null
@@ -223,7 +227,7 @@ downloadCDE (){
 
 downloadCGG (){
 	# CGG
-	echo -n "Downloading CGG... "
+	echo $ECHO_FLAG "Downloading CGG... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip' -P .tmp/cgg -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cgg/dist.zip -d .tmp > /dev/null
@@ -232,7 +236,7 @@ downloadCGG (){
 
 downloadCDC (){
 	# CDC
-	echo -n "Downloading CDC... "
+	echo $ECHO_FLAG "Downloading CDC... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDC'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdc -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdc/dist.zip -d .tmp > /dev/null
@@ -241,7 +245,7 @@ downloadCDC (){
 
 downloadCDB (){
 	# CDB
-	echo -n "Downloading CDB... "
+	echo $ECHO_FLAG "Downloading CDB... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDB'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdb -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdb/dist.zip -d .tmp > /dev/null
@@ -250,7 +254,7 @@ downloadCDB (){
 
 downloadCDV (){
 	# CDV
-	echo -n "Downloading CDV... "
+	echo $ECHO_FLAG "Downloading CDV... "
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDV'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdv -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdv/dist.zip -d .tmp > /dev/null
@@ -263,7 +267,7 @@ downloadCDV (){
 downloadSaiku (){
 	# SAIKU
 
-	echo -n "Downloading Saiku... "
+	echo $ECHO_FLAG "Downloading Saiku... "
 	#
 	#unzip .tmp/saiku/target.zip -d .tmp > /dev/null
 	# tamporarily switch for 2.1
@@ -283,7 +287,7 @@ downloadSaiku (){
 downloadSaikuAdhoc (){
 	# SAIKU Adhoc
 
-	echo -n "Downloading Saiku Adhoc... "
+	echo $ECHO_FLAG "Downloading Saiku Adhoc... "
 	#
 	#unzip .tmp/saiku/target.zip -d .tmp > /dev/null
 	# tamporarily switch for 2.1
@@ -442,8 +446,8 @@ if $ASSUME_YES; then
 	INSTALL_CDF=1
 else
 	echo
-	echo -n "Install CDF? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install CDF? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	  [Yy]* ) INSTALL_CDF=1;;
@@ -455,8 +459,8 @@ if $ASSUME_YES; then
 	INSTALL_CDA=1
 else
 	echo
-	echo -n "Install CDA? This will delete everything in $SOLUTION_DIR/system/cda. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install CDA? This will delete everything in $SOLUTION_DIR/system/cda. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	  [Yy]* ) INSTALL_CDA=1;;
@@ -468,8 +472,8 @@ if $ASSUME_YES; then
 	INSTALL_CDE=1
 else
 	echo
-	echo -n "Install CDE? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf-dd. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install CDE? This will delete everything in $SOLUTION_DIR/system/pentaho-cdf-dd. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	  [Yy]* ) INSTALL_CDE=1;;
@@ -481,8 +485,8 @@ fi
 		INSTALL_CGG=1
 	else
 		echo
-		echo -n "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
-		read -e answer
+		echo $ECHO_FLAG "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
+		read -e answer < /dev/tty
 		case $answer in
 		  [Yy]* ) INSTALL_CGG=1;;
 		  * ) ;;
@@ -497,8 +501,8 @@ then
         INSTALL_CDC=1
     else
 		echo
-		echo -n "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
-		read -e answer
+		echo $ECHO_FLAG "Install CDC? This will delete everything in $SOLUTION_DIR/system/cdc. you sure? (y/N) "
+		read -e answer < /dev/tty
         case $answer in
 			[Yy]* ) INSTALL_CDC=1;;
 		    * ) ;;
@@ -514,8 +518,8 @@ if $ASSUME_YES; then
     INSTALL_CDB=1
 else
     echo
-	echo -n "Install CDB? This will delete everything in $SOLUTION_DIR/system/cdb. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install CDB? This will delete everything in $SOLUTION_DIR/system/cdb. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	    [Yy]* ) INSTALL_CDB=1;;
@@ -528,8 +532,8 @@ if $ASSUME_YES; then
     INSTALL_CDV=1
 else
     echo
-	echo -n "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	    [Yy]* ) INSTALL_CDV=1;;
@@ -544,8 +548,8 @@ if $ASSUME_YES; then
 	INSTALL_SAIKU=1
 else
 	echo
-	echo -n "Install Saiku? This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install Saiku? This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	  [Yy]* ) INSTALL_SAIKU=1;;
@@ -557,8 +561,8 @@ if $ASSUME_YES; then
     INSTALL_SAIKU_ADHOC=1
 else
     echo
-	echo -n "Install Saiku Adhoc? This will delete everything in $SOLUTION_DIR/system/saiku-adhoc. you sure? (y/N) "
-	read -e answer
+	echo $ECHO_FLAG "Install Saiku Adhoc? This will delete everything in $SOLUTION_DIR/system/saiku-adhoc. you sure? (y/N) "
+	read -e answer < /dev/tty
 
 	case $answer in
 	    [Yy]* ) INSTALL_SAIKU_ADHOC=1;;
