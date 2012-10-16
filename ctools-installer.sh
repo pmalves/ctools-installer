@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.37'
+VER='1.39'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.39 - Changed saiku download path to 2.4
 echo v1.38 - Added option -n for CBF integration
 echo v1.37 - plugin-samples/cdv was not deleted. Fixed
 echo v1.36 - CDV now installs samples too
@@ -278,7 +279,7 @@ downloadSaiku (){
 		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-* .tmp	
 	else
-		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.3.zip' -P .tmp -o /dev/null
+		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.4.zip' -P .tmp -o /dev/null
 	fi
 	echo "Done"
 }
