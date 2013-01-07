@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.39'
+VER='1.40'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.40 - Changed dev saiku download path
 echo v1.39 - Changed saiku download path to 2.4
 echo v1.38 - Added option -n for CBF integration
 echo v1.37 - plugin-samples/cdv was not deleted. Fixed
@@ -274,7 +275,7 @@ downloadSaiku (){
 	# tamporarily switch for 2.1
 	if [ $BRANCH = 'dev' ]
 	then
-		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip' -P .tmp/saiku -o /dev/null
+		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-bi-platform-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip' -P .tmp/saiku -o /dev/null
 		rm -f .tmp/dist/marketplace.xml
 		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-* .tmp	
