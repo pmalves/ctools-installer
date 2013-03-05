@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.40'
+VER='1.41'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.41 - Changed dev CGG download process
 echo v1.40 - Changed dev saiku download path
 echo v1.39 - Changed saiku download path to 2.4
 echo v1.38 - Added option -n for CBF integration
@@ -233,6 +234,7 @@ downloadCGG (){
 	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip' -P .tmp/cgg -o /dev/null
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cgg/dist.zip -d .tmp > /dev/null
+	chmod -R +x .tmp/archive
 	echo "Done"
 }
 
@@ -366,7 +368,14 @@ installCDA (){
 
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
-	unzip  .tmp/archive/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	
+	if [ $BRANCH = 'dev' ]
+	then
+    	unzip  .tmp/archive/cgg-pentaho/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
+    else
+        unzip  .tmp/archive/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+    fi
+
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 
