@@ -210,12 +210,13 @@ downloadCDF (){
 
 
 downloadCDA (){
-	# CDA
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'	
+	# CDA	
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/*zip*/archive.zip'	
 	echo $ECHO_FLAG "Downloading CDA... "
 	wget --no-check-certificate $URL -P .tmp/cda -o /dev/null
 	rm -f .tmp/dist/marketplace.xml	
-	unzip .tmp/cda/dist.zip  -d .tmp > /dev/null
+	unzip .tmp/cda/archive.zip  -d .tmp > /dev/null
+	chmod -R +x .tmp/archive
 	echo "Done"
 }
 
@@ -360,11 +361,23 @@ installCDA (){
 	rm -rf $SOLUTION_DIR/bi-developers/cda
 	rm -rf $SOLUTION_DIR/plugin-samples/cda
 		
-	
-	
-	unzip  .tmp/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+		
+		
+    if [ $BRANCH = 'dev' ]
+    then
+        unzip  .tmp/archive/cda-pentaho/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null  
+    else
+        unzip  .tmp/archive/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+    fi 		
+		
 	setupSamples	
-	unzip  .tmp/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
+	
+    if [ $BRANCH = 'dev' ]
+    then
+        unzip  .tmp/archive/cda-pentaho/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples/ > /dev/null  
+    else
+    	unzip  .tmp/archive/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
+    fi 				
 }
 
 installCGG (){
