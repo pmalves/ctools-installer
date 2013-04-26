@@ -75,7 +75,8 @@ usage (){
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (required for cgg on versions before 4.5. eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
-	echo "-y    Assume yes to all prompts"
+	echo "-c    Comma-separated list of CTools to install (Supported module-names: cdf,cda,cde,cgg,cdc,cdb,cdv,saiku,saikuadhoc)"
+  echo "-y    Assume yes to all prompts"
 	echo "-n    Add newline to end of prompts (for integration with CBF)"
 	echo "-h    This help screen"
 	echo
@@ -97,6 +98,7 @@ WEBAPP_PATH='PATH'					# Show all matches (y/n)?
 HAS_WEBAPP_PATH=0
 BRANCH='stable'
 ECHO_FLAG='-n'
+MODULES=''
 ASSUME_YES=false
 
 ORIGINAL_CMDS=$@
@@ -108,6 +110,7 @@ do
 	-s)	SOLUTION_DIR="$2"; shift;;
 	-w)	WEBAPP_PATH="$2"; shift;;
 	-b) BRANCH="$2"; shift;;
+  -c) MODULES="$2"; shift;;
 	-y)	ASSUME_YES=true;;
 	-n)	ECHO_FLAG='';;
 	--)	break;;
@@ -597,6 +600,35 @@ nothingToDo (){
 	cleanup
 	exit 1
 }
+
+if [ "$MODULES" != "" ]; then
+  INSTALL_CDF=0
+  INSTALL_CDA=0
+  INSTALL_CDE=0
+  INSTALL_CGG=0
+  INSTALL_CDC=0
+  INSTALL_CDB=0
+  INSTALL_CDV=0
+  INSTALL_SAIKU=0
+  INSTALL_SAIKU_ADHOC=0
+  MODULES_ARR=$(echo $MODULES | tr "," "\n")
+  for MODULE in $MODULES_ARR
+  do
+    case $MODULE in
+	    cdf) INSTALL_CDF=1;;
+      cda) INSTALL_CDA=1;;
+      cde) INSTALL_CDE=1;;
+      cgg) INSTALL_CGG=1;;
+      cdc) INSTALL_CDC=1;;
+      cdb) INSTALL_CDB=1;;
+      cdv) INSTALL_CDV=1;;
+      saiku) INSTALL_SAIKU=1;;
+      saikuadhoc) INSTALL_SAIKU_ADHOC=1;;
+        * ) ;;
+    esac 
+  done
+fi
+
 
 [ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ] || [ $INSTALL_CDV -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
 
