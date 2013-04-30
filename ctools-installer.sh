@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.42'
+VER='1.43'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.43 - Added option -c to specify ctools list to download - Thanks to Tom
 echo v1.42 - Changed stable CGG download process
 echo v1.41 - Changed dev CGG download process
 echo v1.40 - Changed dev saiku download path
@@ -285,6 +286,7 @@ downloadSaiku (){
 		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-bi-platform-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip' -P .tmp/saiku -o /dev/null
 		rm -f .tmp/dist/marketplace.xml
 		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
+		chmod +x .tmp/target
 		mv .tmp/target/saiku-* .tmp	
 	else
 		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.4.zip' -P .tmp -o /dev/null
@@ -465,7 +467,7 @@ INSTALL_CDV=0
 INSTALL_SAIKU=0
 INSTALL_SAIKU_ADHOC=0
 
-if $ASSUME_YES; then
+if  [ "$MODULES" != "" ] || $ASSUME_YES; then
 	INSTALL_CDF=1
 else
 	echo
@@ -478,7 +480,7 @@ else
 	esac
 fi
 
-if $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
 	INSTALL_CDA=1
 else
 	echo
@@ -491,7 +493,7 @@ else
 	esac
 fi
 
-if $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
 	INSTALL_CDE=1
 else
 	echo
@@ -504,23 +506,24 @@ else
 	esac
 fi
 
-	if $ASSUME_YES; then
-		INSTALL_CGG=1
-	else
-		echo
-		echo $ECHO_FLAG "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
-		read -e answer < /dev/tty
-		case $answer in
-		  [Yy]* ) INSTALL_CGG=1;;
-		  * ) ;;
-		esac
-	fi
+	
+if [ "$MODULES" != "" ] || $ASSUME_YES; then
+    INSTALL_CGG=1
+else
+    echo
+	echo $ECHO_FLAG "Install CGG? This will delete everything in $SOLUTION_DIR/system/cgg. you sure? (y/N) "
+	read -e answer < /dev/tty
+	case $answer in
+	    [Yy]* ) INSTALL_CGG=1;;
+		* ) ;;
+	esac
+fi
 
 
 
 if [[ $HAS_WEBAPP_PATH -eq 1 ]] 
 then
-	if $ASSUME_YES; then
+	if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
         INSTALL_CDC=1
     else
 		echo
@@ -537,7 +540,7 @@ else
 fi
 
 
-if $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
     INSTALL_CDB=1
 else
     echo
@@ -551,7 +554,7 @@ else
 fi				
 
 
-if $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
     INSTALL_CDV=1
 else
     echo
@@ -567,7 +570,7 @@ fi
 
 
 
-if $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
 	INSTALL_SAIKU=1
 else
 	echo
@@ -580,7 +583,7 @@ else
 	esac
 fi
 
-if $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
     INSTALL_SAIKU_ADHOC=1
 else
     echo
