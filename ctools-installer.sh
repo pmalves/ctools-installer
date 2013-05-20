@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.43'
+VER='1.44'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.44 - Added option -r to specify offline mode
 echo v1.43 - Added option -c to specify ctools list to download - Thanks to Tom
 echo v1.42 - Changed stable CGG download process
 echo v1.41 - Changed dev CGG download process
@@ -77,8 +78,9 @@ usage (){
 	echo "-w    Pentaho webapp server path (required for cgg on versions before 4.5. eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
 	echo "-c    Comma-separated list of CTools to install (Supported module-names: cdf,cda,cde,cgg,cdc,cdb,cdv,saiku,saikuadhoc)"
-  echo "-y    Assume yes to all prompts"
+	echo "-y    Assume yes to all prompts"
 	echo "-n    Add newline to end of prompts (for integration with CBF)"
+	echo "-r    Directory for storing offline files"
 	echo "-h    This help screen"
 	echo
 	exit 1
@@ -101,6 +103,7 @@ BRANCH='stable'
 ECHO_FLAG='-n'
 MODULES=''
 ASSUME_YES=false
+OFFLINE_REPOSITORY=''
 
 ORIGINAL_CMDS=$@
 
@@ -111,9 +114,10 @@ do
 	-s)	SOLUTION_DIR="$2"; shift;;
 	-w)	WEBAPP_PATH="$2"; shift;;
 	-b) BRANCH="$2"; shift;;
-  -c) MODULES="$2"; shift;;
+	-c) MODULES="$2"; shift;;
 	-y)	ASSUME_YES=true;;
 	-n)	ECHO_FLAG='';;
+	-r) OFFLINE_REPOSITORY="$2"; shift;;
 	--)	break;;
 	-*|-h)	usage ;;
     esac
@@ -155,6 +159,15 @@ then
 		exit 1
 	fi
 
+fi
+
+if [ "$OFFLINE_REPOSITORY" != "" ]
+then 
+	mkdir -p "$OFFLINE_REPOSITORY/$BRANCH"
+	if [ $? != 0 ]; then
+		echo "ERROR: Failed to create offline stage directory: $OFFLINE_REPOSITORY/$BRANCH"
+		exit 1
+	fi
 fi
 
 for reqcmd in unzip wget
@@ -200,35 +213,50 @@ fi
 
 # Define download functions
 
-downloadCDF (){
+download_file () {
+	WGET_CTOOL="$1"
+	WGET_URL="$2"
+	WGET_FILE="$3"
+	WGET_TARGET_DIR="$4"
+	mkdir -p "$WGET_TARGET_DIR"
+	if [ ! -z "$OFFLINE_REPOSITORY" -a -e "$OFFLINE_REPOSITORY/$BRANCH/$WGET_CTOOL/$WGET_FILE" ]; then
+		echo $ECHO_FLAG "Found $WGET_CTOOL in offline repository. "
+		cp "$OFFLINE_REPOSITORY/$BRANCH/$WGET_CTOOL/$WGET_FILE" "$WGET_TARGET_DIR"
+	else
+		echo $ECHO_FLAG "Downloading $WGET_CTOOL..."
+		wget -q --no-check-certificate "$WGET_URL" -P "$WGET_TARGET_DIR"
+		if [ ! -z "$OFFLINE_REPOSITORY" ]; then
+			echo $ECHO_FLAG "Storing $WGET_CTOOL in offline repository."
+			mkdir -p "$OFFLINE_REPOSITORY/$BRANCH/$WGET_CTOOL" ;
+			cp "$WGET_TARGET_DIR/$WGET_FILE" "$OFFLINE_REPOSITORY/$BRANCH/$WGET_CTOOL/$WGET_FILE"
+		fi
+	fi
+}
 
+downloadCDF () {
 	# CDF
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'	
-	echo $ECHO_FLAG "Downloading CDF... "
-	wget --no-check-certificate $URL -P .tmp/dist/ -o /dev/null	
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/dist"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/dist/dist.zip -d .tmp > /dev/null
 	echo "Done"
-
 }
 
 
 downloadCDA (){
 	# CDA	
 	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/*zip*/archive.zip'	
-	echo $ECHO_FLAG "Downloading CDA... "
-	wget --no-check-certificate $URL -P .tmp/cda -o /dev/null
+	download_file "CDA"  "$URL"  "archive.zip"  ".tmp/cda"
 	rm -f .tmp/dist/marketplace.xml	
 	unzip .tmp/cda/archive.zip  -d .tmp > /dev/null
 	chmod -R +x .tmp/archive
 	echo "Done"
 }
 
-
 downloadCDE (){
 	# CDE
-	echo $ECHO_FLAG "Downloading CDE... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip' -P .tmp/cde -o /dev/null
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip'
+	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cde/dist.zip -d .tmp > /dev/null
 	echo "Done"
@@ -236,8 +264,8 @@ downloadCDE (){
 
 downloadCGG (){
 	# CGG
-	echo $ECHO_FLAG "Downloading CGG... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip' -P .tmp/cgg -o /dev/null
+	URL='http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip'
+	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cgg/dist.zip -d .tmp > /dev/null
 	chmod -R +x .tmp/archive
@@ -246,8 +274,8 @@ downloadCGG (){
 
 downloadCDC (){
 	# CDC
-	echo $ECHO_FLAG "Downloading CDC... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDC'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdc -o /dev/null
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDC'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	download_file "CDC" "$URL" "dist.zip" ".tmp/cdc"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdc/dist.zip -d .tmp > /dev/null
 	echo "Done"
@@ -255,8 +283,8 @@ downloadCDC (){
 
 downloadCDB (){
 	# CDB
-	echo $ECHO_FLAG "Downloading CDB... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDB'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdb -o /dev/null
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDB'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	download_file "CDB" "$URL" "dist.zip" ".tmp/cdb"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdb/dist.zip -d .tmp > /dev/null
 	echo "Done"
@@ -264,32 +292,26 @@ downloadCDB (){
 
 downloadCDV (){
 	# CDV
-	echo $ECHO_FLAG "Downloading CDV... "
-	wget --no-check-certificate 'http://ci.analytical-labs.com/job/Webdetails-CDV'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip' -P .tmp/cdv -o /dev/null
+	URL='http://ci.analytical-labs.com/job/Webdetails-CDV'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	download_file "CDV" "$URL" "dist.zip" ".tmp/cdv"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cdv/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
-
-
-
 downloadSaiku (){
 	# SAIKU
-
-	echo $ECHO_FLAG "Downloading Saiku... "
-	#
-	#unzip .tmp/saiku/target.zip -d .tmp > /dev/null
-	# tamporarily switch for 2.1
 	if [ $BRANCH = 'dev' ]
 	then
-		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-bi-platform-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip' -P .tmp/saiku -o /dev/null
+		URL='http://ci.analytical-labs.com/job/saiku-bi-platform-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip'
+		download_file "SAIKU" "$URL" "target.zip" ".tmp/saiku"
 		rm -f .tmp/dist/marketplace.xml
 		unzip .tmp/saiku/target.zip -d .tmp > /dev/null		
 		chmod +x .tmp/target
 		mv .tmp/target/saiku-* .tmp	
 	else
-		wget --no-check-certificate 'http://analytical-labs.com/downloads/saiku-plugin-2.4.zip' -P .tmp -o /dev/null
+		URL='http://analytical-labs.com/downloads/saiku-plugin-2.4.zip'
+		download_file "SAIKU" "$URL" "saiku-plugin-2.4.zip" ".tmp"
 	fi
 	echo "Done"
 }
@@ -297,22 +319,17 @@ downloadSaiku (){
 
 downloadSaikuAdhoc (){
 	# SAIKU Adhoc
-
-	echo $ECHO_FLAG "Downloading Saiku Adhoc... "
-	#
-	#unzip .tmp/saiku/target.zip -d .tmp > /dev/null
-	# tamporarily switch for 2.1
 	if [ $BRANCH = 'dev' ]
 	then
-		wget --no-check-certificate 'http://ci.analytical-labs.com/job/saiku-adhoc-plugin/lastSuccessfulBuild/artifact/saiku-adhoc-plugin/target/*zip*/target.zip' -P .tmp/saiku-adhoc -o /dev/null
+		URL='http://ci.analytical-labs.com/job/saiku-adhoc-plugin/lastSuccessfulBuild/artifact/saiku-adhoc-plugin/target/*zip*/target.zip'
+		download_file "SAIKU_ADHOC" "$URL" "target.zip" ".tmp/saiku-adhoc"
 		rm -f .tmp/dist/marketplace.xml		
 		unzip .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null		
 		mv .tmp/target/saiku-adhoc-* .tmp	
-		
 	else
-        wget --no-check-certificate 'https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip' -P .tmp/ -o /dev/null
+		URL='https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip' 
+		download_file "SAIKU_ADHOC" "$URL" "saiku-adhoc-plugin-1.0-GA.zip" ".tmp"
     fi
-
 	echo "Done"
 }
 
