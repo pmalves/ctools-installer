@@ -385,21 +385,12 @@ installCDA (){
 		
 		
 		
-    if [ $BRANCH = 'dev' ]
-    then
-        unzip  .tmp/archive/cda-pentaho/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null  
-    else
-        unzip  .tmp/archive/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
-    fi 		
+    unzip  .tmp/archive/cda-pentaho/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 		
 	setupSamples	
 	
-    if [ $BRANCH = 'dev' ]
-    then
-        unzip  .tmp/archive/cda-pentaho/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples/ > /dev/null  
-    else
-    	unzip  .tmp/archive/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
-    fi 				
+    unzip  .tmp/archive/cda-pentaho/dist/cda-samples-*zip -d $SOLUTION_DIR/plugin-samples > /dev/null
+    
 }
 
 installCGG (){
