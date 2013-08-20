@@ -310,8 +310,8 @@ downloadSaiku (){
 		chmod +x .tmp/target
 		mv .tmp/target/saiku-* .tmp	
 	else
-		URL='http://analytical-labs.com/downloads/saiku-plugin-2.4.zip'
-		download_file "SAIKU" "$URL" "saiku-plugin-2.4.zip" ".tmp"
+		URL='http://meteorite.bi/downloads/saiku-plugin-2.5.zip'
+		download_file "SAIKU" "$URL" "saiku-plugin-2.5.zip" ".tmp"
 	fi
 	echo "Done"
 }
