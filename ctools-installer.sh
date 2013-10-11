@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.44'
+VER='1.45'
 
 echo
 echo CTOOLS
@@ -10,11 +10,12 @@ echo ctools-installer version $VER
 echo 
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
-echo Copyright Webdetails 2011
+echo Copyright Webdetails 2011-2013
 echo
 echo 
 echo Changelog:
 echo
+echo v1.45 - Added Marketplace, CFR and Sparkl, currently on -b dev only
 echo v1.44 - Added option -r to specify offline mode
 echo v1.43 - Added option -c to specify ctools list to download - Thanks to Tom
 echo v1.42 - Changed stable CGG download process
@@ -77,7 +78,7 @@ usage (){
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (required for cgg on versions before 4.5. eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
-	echo "-c    Comma-separated list of CTools to install (Supported module-names: cdf,cda,cde,cgg,cdc,cdb,cdv,saiku,saikuadhoc)"
+	echo "-c    Comma-separated list of CTools to install (Supported module-names: marketplace,cdf,cda,cde,cgg,cfr,sparkl,cdc,cdb,cdv,saiku,saikuadhoc)"
 	echo "-y    Assume yes to all prompts"
 	echo "-n    Add newline to end of prompts (for integration with CBF)"
 	echo "-r    Directory for storing offline files"
@@ -233,12 +234,21 @@ download_file () {
 	fi
 }
 
+downloadMarketplace () {
+	# CDF
+	URL='http://ci.pentaho.com/job/marketplace-4.8'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	download_file "Marketplace"  "$URL"  "dist.zip"  ".tmp/marketplace"
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/marketplace/dist.zip -d .tmp > /dev/null
+	echo "Done"
+}
+
 downloadCDF () {
 	# CDF
 	URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
-	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/dist"
+	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/cdf"
 	rm -f .tmp/dist/marketplace.xml
-	unzip .tmp/dist/dist.zip -d .tmp > /dev/null
+	unzip .tmp/cdf/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -269,6 +279,24 @@ downloadCGG (){
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cgg/dist.zip -d .tmp > /dev/null
 	chmod -R +x .tmp/archive
+	echo "Done"
+}
+
+downloadCFR (){
+	# CFR
+	URL='http://ci.analytical-labs.com/job/Webdetails-CFR'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	download_file "CFR" "$URL" "dist.zip" ".tmp/cfr"
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/cfr/dist.zip -d .tmp > /dev/null
+	echo "Done"
+}
+
+downloadSparkl (){
+	# Sparkl
+	URL='http://ci.pentaho.com/job/Sparkl'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	download_file "Sparkl" "$URL" "dist.zip" ".tmp/sparkl"
+	rm -f .tmp/dist/marketplace.xml
+	unzip .tmp/sparkl/dist.zip -d .tmp > /dev/null
 	echo "Done"
 }
 
@@ -347,6 +375,12 @@ setupSamples() {
 	fi		
 }
 
+installMarketplace (){
+
+	rm -rf $SOLUTION_DIR/system/marketplace
+	unzip  .tmp/dist/marketplace-plugin$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
+
+}
 
 installCDF (){
 	rm -rf $SOLUTION_DIR/system/pentaho-cdf
@@ -415,6 +449,21 @@ installCGG (){
 	fi
 }
 
+installCFR (){
+	rm -rf $SOLUTION_DIR/system/cfr
+	#rm -rf $SOLUTION_DIR/plugin-samples/cfr
+	unzip  .tmp/dist/cfr$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	# setupSamples
+	# unzip .tmp/dist/cdv-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
+}
+
+installSparkl (){
+	rm -rf $SOLUTION_DIR/system/sparkl
+	#rm -rf $SOLUTION_DIR/plugin-samples/sparkl
+	unzip  .tmp/dist/sparkl$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+	# setupSamples
+	# unzip .tmp/dist/cdv-samples$FILESUFIX*zip  -d $SOLUTION_DIR/plugin-samples/ > /dev/null
+}
 
 installCDC (){
 	rm -rf $SOLUTION_DIR/system/cdc
@@ -465,15 +514,34 @@ installSaikuAdhoc (){
 
 # read options for stuff to download/install
 
+INSTALL_MARKETPLACE=0
 INSTALL_CDF=0
 INSTALL_CDA=0
 INSTALL_CDE=0
 INSTALL_CGG=0
+INSTALL_CFR=0
+INSTALL_SPARKL=0
 INSTALL_CDC=0
 INSTALL_CDB=0
 INSTALL_CDV=0
 INSTALL_SAIKU=0
 INSTALL_SAIKU_ADHOC=0
+
+if  [ "$BRANCH" = "dev" ]; then
+	if  [ "$MODULES" != "" ] || $ASSUME_YES; then
+		INSTALL_MARKETPLACE=1
+	else
+		echo
+		echo $ECHO_FLAG "Install Marketplace? This will delete everything in $SOLUTION_DIR/system/marketplace. you sure? (y/N) "
+		read -e answer < /dev/tty
+
+		case $answer in
+		  [Yy]* ) INSTALL_MARKETPLACE=1;;
+		  * ) ;;
+		esac
+	fi
+fi
+
 
 if  [ "$MODULES" != "" ] || $ASSUME_YES; then
 	INSTALL_CDF=1
@@ -527,6 +595,37 @@ else
 	esac
 fi
 
+
+if  [ "$BRANCH" = "dev" ]; then
+	if  [ "$MODULES" != "" ] || $ASSUME_YES; then
+		INSTALL_CFR=1
+	else
+		echo
+		echo $ECHO_FLAG "Install CFR? This will delete everything in $SOLUTION_DIR/system/cfr you sure? (y/N) "
+		read -e answer < /dev/tty
+
+		case $answer in
+		  [Yy]* ) INSTALL_CFR=1;;
+		  * ) ;;
+		esac
+	fi
+fi
+
+
+if  [ "$BRANCH" = "dev" ]; then
+	if  [ "$MODULES" != "" ] || $ASSUME_YES; then
+		INSTALL_Sparkl=1
+	else
+		echo
+		echo $ECHO_FLAG "Install Sparkl? This will delete everything in $SOLUTION_DIR/system/sparkl you sure? (y/N) "
+		read -e answer < /dev/tty
+
+		case $answer in
+		  [Yy]* ) INSTALL_SPARKL=1;;
+		  * ) ;;
+		esac
+	fi
+fi
 
 
 if [[ $HAS_WEBAPP_PATH -eq 1 ]] 
@@ -626,10 +725,13 @@ if [ "$MODULES" != "" ]; then
   for MODULE in $MODULES_ARR
   do
     case $MODULE in
-	    cdf) INSTALL_CDF=1;;
+	  marketplace) INSTALL_MARKETPLACE=1;;
+	  cdf) INSTALL_CDF=1;;
       cda) INSTALL_CDA=1;;
       cde) INSTALL_CDE=1;;
       cgg) INSTALL_CGG=1;;
+      cfr) INSTALL_CFR=1;;
+      sparkl) INSTALL_SPARKL=1;;
       cdc) INSTALL_CDC=1;;
       cdb) INSTALL_CDB=1;;
       cdv) INSTALL_CDV=1;;
@@ -641,7 +743,7 @@ if [ "$MODULES" != "" ]; then
 fi
 
 
-[ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ] || [ $INSTALL_CDV -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
+[ $INSTALL_MARKETPLACE -ne 0 ] || [ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CFR -ne 0 ] || [ $INSTALL_SPARKL -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ] || [ $INSTALL_CDV -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
 
 
 # downloading files
@@ -651,10 +753,13 @@ echo Downloading files
 echo
 
 
+[ $INSTALL_MARKETPLACE -eq 0 ] || downloadMarketplace
 [ $INSTALL_CDF -eq 0 ] || downloadCDF
 [ $INSTALL_CDA -eq 0 ] || downloadCDA
 [ $INSTALL_CDE -eq 0 ] || downloadCDE
 [ $INSTALL_CGG -eq 0 ] || downloadCGG
+[ $INSTALL_CFR -eq 0 ] || downloadCFR
+[ $INSTALL_SPARKL -eq 0 ] || downloadSparkl
 [ $INSTALL_CDC -eq 0 ] || downloadCDC
 [ $INSTALL_CDB -eq 0 ] || downloadCDB
 [ $INSTALL_CDV -eq 0 ] || downloadCDV
@@ -668,10 +773,13 @@ echo
 echo Installing files
 echo
 
+[ $INSTALL_MARKETPLACE -eq 0 ] || installMarketplace
 [ $INSTALL_CDF -eq 0 ] || installCDF
 [ $INSTALL_CDA -eq 0 ] || installCDA
 [ $INSTALL_CDE -eq 0 ] || installCDE
 [ $INSTALL_CGG -eq 0 ] || installCGG
+[ $INSTALL_CFR -eq 0 ] || installCFR
+[ $INSTALL_SPARKL -eq 0 ] || installSparkl
 [ $INSTALL_CDC -eq 0 ] || installCDC
 [ $INSTALL_CDB -eq 0 ] || installCDB
 [ $INSTALL_CDV -eq 0 ] || installCDV
