@@ -265,7 +265,12 @@ downloadCDA (){
 
 downloadCDE (){
 	# CDE
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip'
+	if [ $BRANCH = 'dev' ]
+	then	
+	    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
+	else
+	    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip'
+	fi
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cde/dist.zip -d .tmp > /dev/null
