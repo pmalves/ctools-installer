@@ -298,7 +298,7 @@ downloadCFR (){
 
 downloadSparkl (){
 	# Sparkl
-	URL='http://ci.pentaho.com/job/Sparkl-4x'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	URL='http://ci.pentaho.com/job/Sparkl-4.x'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
 	download_file "Sparkl" "$URL" "dist.zip" ".tmp/sparkl"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/sparkl/dist.zip -d .tmp > /dev/null
