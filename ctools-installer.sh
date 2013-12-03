@@ -279,7 +279,12 @@ downloadCDE (){
 
 downloadCGG (){
 	# CGG
-	URL='http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip'
+	if [ $BRANCH = 'dev' ]
+	then
+	    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/*zip*/dist.zip'
+	else
+    	URL='http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip'
+    fi
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
 	rm -f .tmp/dist/marketplace.xml
 	unzip .tmp/cgg/dist.zip -d .tmp > /dev/null
@@ -435,8 +440,13 @@ installCDA (){
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
 	
-    unzip  .tmp/archive/cgg-pentaho/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
-
+	
+	if [ $BRANCH = 'dev' ]
+	then	
+	    unzip .tmp/archive/cgg-pentaho/dist/cgg-pentaho$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
+	else
+        unzip  .tmp/archive/cgg-pentaho/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
+    fi
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 
