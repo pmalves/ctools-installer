@@ -255,7 +255,12 @@ downloadCDF () {
 
 downloadCDA (){
 	# CDA	
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/*zip*/archive.zip'	
+	if [ $BRANCH = 'dev' ]
+	then	
+	    URL='http://ci.pentaho.com/job/pentaho-cda-pentaho/lastSuccessfulBuild/artifact/*zip*/archive.zip'
+    else	
+    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/*zip*/archive.zip'	
+    fi
 	download_file "CDA"  "$URL"  "archive.zip"  ".tmp/cda"
 	rm -f .tmp/dist/marketplace.xml	
 	unzip .tmp/cda/archive.zip  -d .tmp > /dev/null
