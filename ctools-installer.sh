@@ -382,7 +382,12 @@ downloadCDB (){
 
 downloadCDV (){
 	# CDV
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDV'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	if [ $BRANCH = 'dev' ]
+	then	
+        URL='http://ci.pentaho.com/job/pentaho-cdv-pentaho/lastSuccessfulBuild/artifact/cdv-pentaho/dist/*zip*/dist.zip'
+    else
+    	URL='http://ci.analytical-labs.com/job/Webdetails-CDV'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'    
+    fi
 	download_file "CDV" "$URL" "dist.zip" ".tmp/cdv"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cdv/dist.zip -d .tmp > /dev/null
@@ -502,7 +507,6 @@ installCDA (){
 		
     unzip -o .tmp/archive/cda-pentaho/dist/cda$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
 	installSamples plugin-samples .tmp/archive/cda-pentaho/dist/cda-samples-*zip
-    
 }
 
 installCGG (){
@@ -564,8 +568,13 @@ installCDB (){
 installCDV (){
 	rm -rf $SOLUTION_DIR/system/cdv
 	rm -rf $SOLUTION_DIR/plugin-samples/cdv
-	unzip -o .tmp/dist/cdv$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
-	installSamples plugin-samples .tmp/dist/cdv$FILESUFIX*zip
+	if [ $BRANCH = 'dev' ]
+	then	
+		unzip -o .tmp/dist/cdv-pentaho$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	else		
+		unzip -o .tmp/dist/cdv$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null
+    fi
+	installSamples plugin-samples .tmp/dist/cdv-samples$FILESUFIX*zip
 }
 
 installSaiku (){
