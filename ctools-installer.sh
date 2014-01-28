@@ -209,23 +209,23 @@ fi
 rm -rf .tmp
 mkdir -p .tmp/dist
 
-#wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
-#
-#if ! diff --strip-trailing-cr $0 .tmp/ctools-installer.sh >/dev/null ; then
-#  answer=n
-#  if $ASSUME_YES ; then
-#    answer=y
-#  else
-#    echo
-#    echo $ECHO_FLAG "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
-#    read -e answer < /dev/tty
-#  fi
-#
-#  case $answer in
-#	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successful. Rerunning command '$0 $ORIGINAL_CMDS'"; /bin/bash $0 $ORIGINAL_CMDS; exit 0;;
-#  esac
-#
-#fi
+wget --no-check-certificate 'https://raw.github.com/pmalves/ctools-installer/master/ctools-installer.sh' -P .tmp -o /dev/null
+
+if ! diff --strip-trailing-cr $0 .tmp/ctools-installer.sh >/dev/null ; then
+  answer=n
+  if $ASSUME_YES ; then
+    answer=y
+  else
+    echo
+    echo $ECHO_FLAG "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
+    read -e answer < /dev/tty
+  fi
+
+  case $answer in
+	 [Yy]* ) cp .tmp/ctools-installer.sh $0; echo "Upgrade successful. Rerunning command '$0 $ORIGINAL_CMDS'"; /bin/bash $0 $ORIGINAL_CMDS; exit 0;;
+  esac
+
+fi
 
 # Define download functions
 
@@ -478,7 +478,7 @@ installSamples() {
 
 installMarketplace (){
 	rm -rf $SOLUTION_DIR/system/marketplace
-	unzip -o .tmp/marketplace/plugin.zip -d $SOLUTION_DIR/system/ > /dev/null	
+	unzip -o .tmp/marketplace/plugin.zip -d "$SOLUTION_DIR/system/" > /dev/null	
 }
 
 installCDF (){
@@ -489,7 +489,7 @@ installCDF (){
 	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
 	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf
 	
-	unzip -o .tmp/dist/pentaho-cdf$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip -o .tmp/dist/pentaho-cdf$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	installSamples plugin-samples .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip
 }
 
@@ -501,7 +501,7 @@ installCDE (){
 	rm -rf $SOLUTION_DIR/plugin-samples/cde_sample
 	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf-dd
 
-	unzip -o .tmp/dist/pentaho-cdf-dd$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip -o .tmp/dist/pentaho-cdf-dd$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	installSamples plugin-samples .tmp/dist/pentaho-cdf-dd-solution$FILESUFIX.zip
 }
 
@@ -512,7 +512,7 @@ installCDA (){
 	rm -rf $SOLUTION_DIR/bi-developers/cda
 	rm -rf $SOLUTION_DIR/plugin-samples/cda
 		
-    unzip -o .tmp/dist/cda$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+    unzip -o .tmp/dist/cda$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	installSamples plugin-samples .tmp/dist/cda-samples$FILESUFIX.zip
 }
 
@@ -522,12 +522,12 @@ installCGG (){
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		if [ $BRANCH = 'dev' ]
 		then	
-		    unzip -o .tmp/archive/cgg-pentaho/dist/cgg-pentaho$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
+		    unzip -o .tmp/archive/cgg-pentaho/dist/cgg-pentaho$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null	
 		else
-	        unzip -o .tmp/archive/cgg-pentaho/dist/cgg$FILESUFIX*zip -d $SOLUTION_DIR/system/ > /dev/null	
+	        unzip -o .tmp/archive/cgg-pentaho/dist/cgg$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null	
 	    fi
 	else
-	        unzip -o .tmp/dist/cgg$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	        unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	fi	
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
@@ -548,17 +548,17 @@ installCGG (){
 
 installCFR (){
 	rm -rf $SOLUTION_DIR/system/cfr
-	unzip -o .tmp/dist/cfr$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip -o .tmp/dist/cfr$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 }
 
 installSparkl (){
 	rm -rf $SOLUTION_DIR/system/sparkl
-	unzip -o .tmp/dist/sparkl$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip -o .tmp/dist/sparkl$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 }
 
 installCDC (){
 	rm -rf $SOLUTION_DIR/system/cdc
-	unzip -o .tmp/dist/cdc$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip -o .tmp/dist/cdc$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 
 	# Changes to the server; 
 	
@@ -572,7 +572,7 @@ installCDC (){
 
 installCDB (){
 	rm -rf $SOLUTION_DIR/system/cdb
-	unzip -o .tmp/dist/cdb$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+	unzip -o .tmp/dist/cdb$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 }
 
 installCDV (){
@@ -581,24 +581,24 @@ installCDV (){
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		if [ $BRANCH = 'dev' ]
 		then
-			unzip -o .tmp/dist/cdv-pentaho*$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+			unzip -o .tmp/dist/cdv-pentaho*$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 		else
-			unzip -o .tmp/dist/cdv$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+			unzip -o .tmp/dist/cdv$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	    fi
 	else
-			unzip -o .tmp/dist/cdv$FILESUFIX.zip -d $SOLUTION_DIR/system/ > /dev/null
+			unzip -o .tmp/dist/cdv$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	fi
 	installSamples plugin-samples .tmp/dist/cdv-samples$FILESUFIX*zip
 }
 
 installSaiku (){
 	rm -rf $SOLUTION_DIR/system/saiku
-	unzip -o .tmp/saiku-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null	
+	unzip -o .tmp/saiku-plugin*zip -d "$SOLUTION_DIR/system/" > /dev/null	
 }
 
 installSaikuAdhoc (){
 	rm -rf $SOLUTION_DIR/system/saiku-adhoc
-	unzip -o .tmp/saiku-adhoc-plugin*zip -d $SOLUTION_DIR/system/ > /dev/null	
+	unzip -o .tmp/saiku-adhoc-plugin*zip -d "$SOLUTION_DIR/system/" > /dev/null	
 }
 
 
