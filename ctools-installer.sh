@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.45'
+VER='1.46'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo 
 echo Changelog:
 echo
+echo v1.46 - Added stable versions for Pentaho 5
 echo v1.45 - Added Marketplace, CFR and Sparkl, currently on -b dev only
 echo v1.44 - Added option -r to specify offline mode
 echo v1.43 - Added option -c to specify ctools list to download - Thanks to Tom
@@ -189,19 +190,14 @@ do
 done
 
 
-if [[ "$BASERVER_VERSION" = "4x" ]]; then
-	if [ $BRANCH = 'dev' ]
-	then
-		URL1=''
-		FILESUFIX='-TRUNK-SNAPSHOT'
-	else
-		URL1='-release'
-		FILESUFIX='-??.??.??'
-	fi
+
+if [ $BRANCH = 'dev' ]
+then
+	URL1=''
+    FILESUFIX='-TRUNK-SNAPSHOT'
 else
-		BRANCH='dev'
-		URL1=''
-		FILESUFIX='-TRUNK-SNAPSHOT'
+	URL1='-release'
+    FILESUFIX='-??.??.??'
 fi
 
 
@@ -266,9 +262,19 @@ downloadMarketplace () {
 downloadCDF () {
 	# CDF
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-		URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+	    if  [ $BRANCH = 'dev' ] 
+	    then
+    		URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+    	else
+    	    URL='http://ci.pentaho.com/job/pentaho-CDF-r/6/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+    	fi
 	else
-		URL='http://ci.pentaho.com/job/pentaho-cdf/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+	    if  [ $BRANCH = 'dev' ] 
+	    then
+		    URL='http://ci.pentaho.com/job/pentaho-cdf/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+		else
+            URL='http://ci.analytical-labs.com/job/Webdetails-CDF-5-Release/2/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'		
+		fi
 	fi
 	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/cdf"
 	rm -f .tmp/dist/marketplace.xml
@@ -285,10 +291,16 @@ downloadCDA (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cda-pentaho/lastSuccessfulBuild/artifact/cda-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA'$URL1'/lastSuccessfulBuild/artifact/cda-pentaho/dist/*zip*/dist.zip'
+	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA-Release/41/artifact/cda-pentaho/dist/*zip*/dist.zip'
 	    fi
 	else
-		URL='http://ci.pentaho.com/job/pentaho-cda/lastSuccessfulBuild/artifact/cda-pentaho5/dist/*zip*/dist.zip'
+		if [ $BRANCH = 'dev' ]
+		then	
+    		URL='http://ci.pentaho.com/job/pentaho-cda/lastSuccessfulBuild/artifact/cda-pentaho5/dist/*zip*/dist.zip'
+	    else
+	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA-Release/41/artifact/cda-pentaho5/dist/*zip*/dist.zip'
+	    fi
+    		
 	fi
 	download_file "CDA"  "$URL"  "dist.zip"  ".tmp/cda"
 	rm -f .tmp/dist/marketplace.xml	
@@ -304,10 +316,15 @@ downloadCDE (){
 		then
 		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
 		else
-		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/server/plugin/dist/*zip*/dist.zip'
+		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE-Release/13/artifact/cde-pentaho/dist/*zip*/dist.zip'
 		fi
 	else
-		URL='http://ci.pentaho.com/job/webdetails-cde-5.0/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
+		if [ $BRANCH = 'dev' ]
+		then	
+    		URL='http://ci.pentaho.com/job/webdetails-cde-5.0/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
+		else
+		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE-Release/13/artifact/cde-pentaho5/dist/*zip*/dist.zip'
+		fi    		
 	fi		
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
 	rm -f .tmp/dist/marketplace.xml
@@ -323,10 +340,15 @@ downloadCGG (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/*zip*/dist.zip'
 		else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CGG'$URL1'/lastSuccessfulBuild/artifact/*zip*/dist.zip'
+	    	URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release/13/artifact/*zip*/archive.zip'
 	    fi
 	else
-		URL='http://ci.pentaho.com/job/Webdetails-cgg/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+		if [ $BRANCH = 'dev' ]
+		then	
+    		URL='http://ci.pentaho.com/job/Webdetails-cgg/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+    	else
+    	    URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release-5/1/artifact/dist/*zip*/dist.zip'
+    	fi
 	fi		
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
 	rm -f .tmp/dist/marketplace.xml
@@ -462,7 +484,7 @@ installSamples() {
 		then
 			echo '<index><visible>true</visible><name>Plugin Samples</name><description>Plugin Samples</description></index>' > "$SOLUTION_DIR/plugin-samples/index.xml"
 		fi
-		unzip -o -q "$SAMPLES_ZIP_FULLNAME" -d "$SAMPLES_LOCATION"
+		unzip -o -q "$SAMPLES_ZIP_FULLNAME" -d "$SOLUTION_DIR/$SAMPLES_LOCATION"
 	else
 		# Repackage samples with new Repository Path:
 		SAMPLES_ZIP_BASENAME=`basename "$SAMPLES_ZIP_FULLNAME"`
@@ -520,14 +542,9 @@ installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
 	
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-		if [ $BRANCH = 'dev' ]
-		then	
-		    unzip -o .tmp/archive/cgg-pentaho/dist/cgg-pentaho$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null	
-		else
-	        unzip -o .tmp/archive/cgg-pentaho/dist/cgg$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null	
-	    fi
+	    unzip -o .tmp/archive/cgg-pentaho/dist/cgg-pentaho$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null	
 	else
-	        unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	    unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	fi	
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
