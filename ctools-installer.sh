@@ -266,7 +266,7 @@ downloadCDF () {
 	    then
     		URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
     	else
-    	    URL='http://ci.pentaho.com/job/pentaho-CDF-r/6/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+    	    URL='http://ci.pentaho.com/job/pentaho-CDF-r/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
     	fi
 	else
 	    if  [ $BRANCH = 'dev' ] 
