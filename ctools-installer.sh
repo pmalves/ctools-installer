@@ -359,7 +359,11 @@ downloadCGG (){
 
 downloadCFR (){
 	# CFR
-	URL='http://ci.analytical-labs.com/job/Webdetails-CFR'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+    if [[ "$BASERVER_VERSION" = "4x" ]]; then	
+	    URL='http://ci.pentaho.com/job/pentaho-cfr-pentaho/lastSuccessfulBuild/artifact/cfr-pentaho/dist/*zip*/dist.zip'
+	else
+	    URL='http://ci.pentaho.com/job/pentaho-cfr/lastSuccessfulBuild/artifact/cfr-pentaho5/dist/*zip*/dist.zip'
+	fi
 	download_file "CFR" "$URL" "dist.zip" ".tmp/cfr"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cfr/dist.zip -d .tmp > /dev/null
@@ -565,7 +569,11 @@ installCGG (){
 
 installCFR (){
 	rm -rf $SOLUTION_DIR/system/cfr
-	unzip -o .tmp/dist/cfr$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+    if [[ "$BASERVER_VERSION" = "4x" ]]; then	
+	    unzip -o .tmp/dist/cfr-pentaho*$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	else
+	    unzip -o .tmp/dist/cfr-pentaho5$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	fi
 }
 
 installSparkl (){
@@ -869,7 +877,7 @@ echo
 [ $INSTALL_CDA -eq 0 ] || downloadCDA
 [ $INSTALL_CDE -eq 0 ] || downloadCDE
 [ $INSTALL_CGG -eq 0 ] || downloadCGG
-[ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CFR -eq 0 ] || downloadCFR
+[ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || downloadCFR
 [ $INSTALL_SPARKL -eq 0 ] || downloadSparkl
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDC -eq 0 ] || downloadCDC
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDB -eq 0 ] || downloadCDB
@@ -889,7 +897,7 @@ echo
 [ $INSTALL_CDA -eq 0 ] || installCDA
 [ $INSTALL_CDE -eq 0 ] || installCDE
 [ $INSTALL_CGG -eq 0 ] || installCGG
-[ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CFR -eq 0 ] || installCFR
+[ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || installCFR
 [ $INSTALL_SPARKL -eq 0 ] || installSparkl
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDC -eq 0 ] || installCDC
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDB -eq 0 ] || installCDB
