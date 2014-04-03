@@ -7,12 +7,12 @@ echo
 echo CTOOLS
 echo
 echo ctools-installer version $VER
-echo 
+echo
 echo "Author: Pedro Alves (webdetails)"
 echo Thanks to Analytical Labs for jenkins builds
 echo Copyright Webdetails 2011-2013
 echo
-echo 
+echo
 echo Changelog:
 echo
 echo v1.46 - Added stable versions for Pentaho 5
@@ -68,12 +68,12 @@ echo "Disclaimer: we can't be responsible for any damage done to your system, wh
 echo Note: ctools-installer.sh will upgrade the plugins under system directory.
 echo "      Any changes you have made there (eg: cdf templates) will have to be backed up and manually copied after running the script"
 echo "     CGG will need to change the server WEB-INF/lib too. Backup your server"
-echo 
+echo
 
 
 usage (){
 
-	echo 
+	echo
 	echo "Usage: ctools-installer.sh -s solutionPath [-w pentahoWebapPath] [-b branch]"
 	echo
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
@@ -130,7 +130,7 @@ done
 [ "$SOLUTION_DIR" = 'PATH' ] && usage
 
 if [ "$WEBAPP_PATH" != 'PATH' ]
-then 
+then
 HAS_WEBAPP_PATH=1
 fi
 
@@ -172,7 +172,7 @@ else
 fi
 
 if [ "$OFFLINE_REPOSITORY" != "" ]
-then 
+then
 	mkdir -p "$OFFLINE_REPOSITORY/$BASERVER_VERSION/$BRANCH"
 	if [ $? != 0 ]; then
 		echo "ERROR: Failed to create offline stage directory: $OFFLINE_REPOSITORY/$BASERVER_VERSION/$BRANCH"
@@ -251,7 +251,7 @@ downloadMarketplace () {
 		URL='http://ci.pentaho.com/job/marketplace-4.8'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-plugin-TRUNK-SNAPSHOT.zip'
 	else
 		URL='http://ci.pentaho.com/job/marketplace'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-plugin-TRUNK-SNAPSHOT.zip'
-	fi		
+	fi
 	download_file "Marketplace"  "$URL"  "plugin.zip"  ".tmp/marketplace"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/marketplace/plugin.zip -d .tmp > /dev/null
@@ -262,18 +262,18 @@ downloadMarketplace () {
 downloadCDF () {
 	# CDF
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-	    if  [ $BRANCH = 'dev' ] 
+	    if  [ $BRANCH = 'dev' ]
 	    then
     		URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
     	else
     	    URL='http://www.webdetails.pt/ficheiros/cdf-14.03.07/dist.zip'
     	fi
 	else
-	    if  [ $BRANCH = 'dev' ] 
+	    if  [ $BRANCH = 'dev' ]
 	    then
 		    URL='http://ci.pentaho.com/job/pentaho-cdf/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
 		else
-            URL='http://ci.analytical-labs.com/job/Webdetails-CDF-5-Release/2/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'		
+            URL='http://ci.analytical-labs.com/job/Webdetails-CDF-5-Release/2/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
 		fi
 	fi
 	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/cdf"
@@ -285,7 +285,7 @@ downloadCDF () {
 
 
 downloadCDA (){
-	# CDA	
+	# CDA
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		if [ $BRANCH = 'dev' ]
 		then
@@ -295,15 +295,15 @@ downloadCDA (){
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
-		then	
+		then
     		URL='http://ci.pentaho.com/job/pentaho-cda/lastSuccessfulBuild/artifact/cda-pentaho5/dist/*zip*/dist.zip'
 	    else
 	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA-Release/41/artifact/cda-pentaho5/dist/*zip*/dist.zip'
 	    fi
-    		
+
 	fi
 	download_file "CDA"  "$URL"  "dist.zip"  ".tmp/cda"
-	rm -f .tmp/dist/marketplace.xml	
+	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cda/dist.zip  -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
@@ -320,12 +320,12 @@ downloadCDE (){
 		fi
 	else
 		if [ $BRANCH = 'dev' ]
-		then	
+		then
     		URL='http://ci.pentaho.com/job/webdetails-cde-5.0/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
 		else
 		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE-Release/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
-		fi    		
-	fi		
+		fi
+	fi
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cde/dist.zip -d .tmp > /dev/null
@@ -338,18 +338,18 @@ downloadCGG (){
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		if [ $BRANCH = 'dev' ]
 		then
-		    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/*zip*/dist.zip'
+		    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/cgg-pentaho/dist/*zip*/dist.zip'
 		else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release/13/artifact/*zip*/archive.zip'
+	    	URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release/13/artifact/cgg-pentaho/dist/*zip*/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
-		then	
-    		URL='http://ci.pentaho.com/job/Webdetails-cgg/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+		then
+    		URL='http://ci.pentaho.com/job/pentaho-cgg/lastSuccessfulBuild/artifact/cgg-pentaho5/dist/*zip*/dist.zip'
     	else
     	    URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release-5/1/artifact/dist/*zip*/dist.zip'
     	fi
-	fi		
+	fi
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cgg/dist.zip -d .tmp > /dev/null
@@ -359,7 +359,7 @@ downloadCGG (){
 
 downloadCFR (){
 	# CFR
-    if [[ "$BASERVER_VERSION" = "4x" ]]; then	
+    if [[ "$BASERVER_VERSION" = "4x" ]]; then
 	    URL='http://ci.pentaho.com/job/pentaho-cfr-pentaho/lastSuccessfulBuild/artifact/cfr-pentaho/dist/*zip*/dist.zip'
 	else
 	    URL='http://ci.pentaho.com/job/pentaho-cfr/lastSuccessfulBuild/artifact/cfr-pentaho5/dist/*zip*/dist.zip'
@@ -377,7 +377,7 @@ downloadSparkl (){
 		URL='http://ci.pentaho.com/job/Sparkl-4.x/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
 	else
 		URL='http://ci.pentaho.com/job/Sparkl/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
-	fi		
+	fi
 	download_file "Sparkl" "$URL" "dist.zip" ".tmp/sparkl"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/sparkl/dist.zip -d .tmp > /dev/null
@@ -451,7 +451,7 @@ downloadSaiku (){
 		else
 			echo "SAIKU [stable] not available for Pentaho 5.x yet."
 		fi
-	fi		
+	fi
 	echo "Done"
 }
 
@@ -467,7 +467,7 @@ downloadSaikuAdhoc (){
 		chmod -R u+rwx .tmp
 		mv .tmp/target/saiku-adhoc-* .tmp
 	else
-		URL='https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip' 
+		URL='https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip'
 		download_file "SAIKU_ADHOC" "$URL" "saiku-adhoc-plugin-1.0-GA.zip" ".tmp"
     fi
 	echo "Done"
@@ -504,17 +504,17 @@ installSamples() {
 
 installMarketplace (){
 	rm -rf $SOLUTION_DIR/system/marketplace
-	unzip -o .tmp/marketplace/plugin.zip -d "$SOLUTION_DIR/system/" > /dev/null	
+	unzip -o .tmp/marketplace/plugin.zip -d "$SOLUTION_DIR/system/" > /dev/null
 }
 
 installCDF (){
 	rm -rf $SOLUTION_DIR/system/pentaho-cdf
 
 	# Removing samples dir. First two are deprecated
-	rm -rf $SOLUTION_DIR/bi-developers/cdf-samples	
-	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples	
+	rm -rf $SOLUTION_DIR/bi-developers/cdf-samples
+	rm -rf $SOLUTION_DIR/plugin-samples/cdf-samples
 	rm -rf $SOLUTION_DIR/plugin-samples/pentaho-cdf
-	
+
 	unzip -o .tmp/dist/pentaho-cdf$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	installSamples plugin-samples .tmp/dist/pentaho-cdf-samples$FILESUFIX*zip
 }
@@ -537,19 +537,23 @@ installCDA (){
 	# Removing samples dir. First is deprecated
 	rm -rf $SOLUTION_DIR/bi-developers/cda
 	rm -rf $SOLUTION_DIR/plugin-samples/cda
-		
+
     unzip -o .tmp/dist/cda$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	installSamples plugin-samples .tmp/dist/cda-samples$FILESUFIX.zip
 }
 
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
-	
+
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-	    unzip -o .tmp/archive/cgg-pentaho/dist/cgg-pentaho$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null	
+			if [[ "$BRANCH" = "dev" ]]; then
+	    	unzip -o .tmp/dist/cgg$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null
+			else
+				unzip -o .tmp/dist/cgg-pentaho$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null
+			fi
 	else
-	    unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
-	fi	
+			unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	fi
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 
@@ -569,7 +573,7 @@ installCGG (){
 
 installCFR (){
 	rm -rf $SOLUTION_DIR/system/cfr
-    if [[ "$BASERVER_VERSION" = "4x" ]]; then	
+    if [[ "$BASERVER_VERSION" = "4x" ]]; then
 	    unzip -o .tmp/dist/cfr-pentaho*$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	else
 	    unzip -o .tmp/dist/cfr-pentaho5$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
@@ -585,13 +589,13 @@ installCDC (){
 	rm -rf $SOLUTION_DIR/system/cdc
 	unzip -o .tmp/dist/cdc$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 
-	# Changes to the server; 
-	
+	# Changes to the server;
+
 	# 1 - copy hazelcast to WEB-INF/lib
 	LIB_DIR=$WEBAPP_PATH/WEB-INF/lib
 	CDC_HAZELCAST_DIR=$SOLUTION_DIR/system/cdc/pentaho-lib
-	rm -rf $LIB_DIR/hazelcast-*.jar		
-	rm -rf $LIB_DIR/cdc-hazelcast-*.jar		
+	rm -rf $LIB_DIR/hazelcast-*.jar
+	rm -rf $LIB_DIR/cdc-hazelcast-*.jar
 	cp $CDC_HAZELCAST_DIR/*.jar  $LIB_DIR
 }
 
@@ -618,12 +622,12 @@ installCDV (){
 
 installSaiku (){
 	rm -rf $SOLUTION_DIR/system/saiku
-	unzip -o .tmp/saiku-plugin*zip -d "$SOLUTION_DIR/system/" > /dev/null	
+	unzip -o .tmp/saiku-plugin*zip -d "$SOLUTION_DIR/system/" > /dev/null
 }
 
 installSaikuAdhoc (){
 	rm -rf $SOLUTION_DIR/system/saiku-adhoc
-	unzip -o .tmp/saiku-adhoc-plugin*zip -d "$SOLUTION_DIR/system/" > /dev/null	
+	unzip -o .tmp/saiku-adhoc-plugin*zip -d "$SOLUTION_DIR/system/" > /dev/null
 }
 
 
@@ -698,7 +702,7 @@ else
 	esac
 fi
 
-	
+
 if [ "$MODULES" != "" ] || $ASSUME_YES; then
     INSTALL_CGG=1
 else
@@ -744,7 +748,7 @@ if  [ "$BRANCH" = "dev" ]; then
 fi
 
 
-if [[ $HAS_WEBAPP_PATH -eq 1 ]] 
+if [[ $HAS_WEBAPP_PATH -eq 1 ]]
 then
 	if [ $BASERVER_VERSION = '5x' ] || [ "$MODULES" != "" ] ||  $ASSUME_YES; then
         INSTALL_CDC=1
@@ -774,7 +778,7 @@ else
 	    [Yy]* ) INSTALL_CDB=1;;
 		* ) ;;
     esac
-fi				
+fi
 
 
 if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
@@ -788,7 +792,7 @@ else
 	    [Yy]* ) INSTALL_CDV=1;;
 		* ) ;;
     esac
-fi				
+fi
 
 
 
@@ -857,7 +861,7 @@ if [ "$MODULES" != "" ]; then
       saiku) INSTALL_SAIKU=1;;
       saikuadhoc) INSTALL_SAIKU_ADHOC=1;;
         * ) ;;
-    esac 
+    esac
   done
 fi
 
@@ -907,7 +911,7 @@ echo
 
 
 
-cleanup
+#cleanup
 
 echo
 echo Done!
