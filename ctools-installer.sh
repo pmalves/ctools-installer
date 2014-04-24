@@ -264,9 +264,9 @@ downloadCDF () {
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 	    if  [ $BRANCH = 'dev' ]
 	    then
-    		URL='http://ci.analytical-labs.com/job/Webdetails-CDF'$URL1'/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+    		URL='http://ci.pentaho.com/job/pentaho-cdf-pentaho/lastSuccessfulBuild/artifact/cdf-pentaho/dist/*zip*/dist.zip'
     	else
-    	    URL='http://www.webdetails.pt/ficheiros/cdf-14.03.07/dist.zip'
+    	  URL='http://www.webdetails.pt/ficheiros/cdf-14.03.07/dist.zip'
     	fi
 	else
 	    if  [ $BRANCH = 'dev' ]
