@@ -266,7 +266,7 @@ downloadCDF () {
 	    then
     		URL='http://ci.pentaho.com/job/pentaho-cdf-pentaho/lastSuccessfulBuild/artifact/cdf-pentaho/dist/*zip*/dist.zip'
     	else
-    	  URL='http://www.webdetails.pt/ficheiros/cdf-14.03.07/dist.zip'
+    	  URL='http://www.webdetails.pt/ficheiros/cdf-14.05.06/dist.zip'
     	fi
 	else
 	    if  [ $BRANCH = 'dev' ]
