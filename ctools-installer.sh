@@ -291,14 +291,14 @@ downloadCDA (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cda-pentaho/lastSuccessfulBuild/artifact/cda-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA-Release/41/artifact/cda-pentaho/dist/*zip*/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cda/14.05.06/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cda/lastSuccessfulBuild/artifact/cda-pentaho5/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDA-Release/41/artifact/cda-pentaho5/dist/*zip*/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cda/14.05.06/5.x/dist.zip'
 	    fi
 
 	fi
