@@ -340,14 +340,14 @@ downloadCGG (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/cgg-pentaho/dist/*zip*/dist.zip'
 		else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release/13/artifact/cgg-pentaho/dist/*zip*/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cgg/14.05.06/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cgg/lastSuccessfulBuild/artifact/cgg-pentaho5/dist/*zip*/dist.zip'
     	else
-    	    URL='http://ci.analytical-labs.com/job/Webdetails-CGG-Release-5/1/artifact/dist/*zip*/dist.zip'
+    	    URL='http://www.webdetails.pt/ficheiros/cgg/14.05.06/5.x/dist.zip'
     	fi
 	fi
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
@@ -545,15 +545,7 @@ installCDA (){
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
 
-	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-			if [[ "$BRANCH" = "dev" ]]; then
-	    	unzip -o .tmp/dist/cgg$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null
-			else
-				unzip -o .tmp/dist/cgg-pentaho$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null
-			fi
-	else
-			unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
-	fi
+	unzip -o .tmp/dist/cgg$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 
