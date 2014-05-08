@@ -316,14 +316,14 @@ downloadCDE (){
 		then
 		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
 		else
-		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE-Release/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
+		    URL='http://www.webdetails.pt/ficheiros/cde/14.05.06/4.x/dist.zip'
 		fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/webdetails-cde-5.0/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
 		else
-		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE-Release/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
+		    URL='http://www.webdetails.pt/ficheiros/cde/14.05.06/5.x/dist.zip'
 		fi
 	fi
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
