@@ -266,14 +266,14 @@ downloadCDF () {
 	    then
     		URL='http://ci.pentaho.com/job/pentaho-cdf-pentaho/lastSuccessfulBuild/artifact/cdf-pentaho/dist/*zip*/dist.zip'
     	else
-    	  URL='http://www.webdetails.pt/ficheiros/cdf-14.05.06/dist.zip'
+    	  URL='http://www.webdetails.pt/ficheiros/cdf/14.06.18/4.x/dist.zip'
     	fi
 	else
 	    if  [ $BRANCH = 'dev' ]
 	    then
 		    URL='http://ci.pentaho.com/job/pentaho-cdf/lastSuccessfulBuild/artifact/cdf-pentaho5/dist/*zip*/dist.zip'
 		else
-            URL='http://ci.analytical-labs.com/job/Webdetails-CDF-5-Release/lastSuccessfulBuild/artifact/bi-platform-v2-plugin/dist/*zip*/dist.zip'
+            URL='http://www.webdetails.pt/ficheiros/cdf/14.06.18/5.x/dist.zip'
 		fi
 	fi
 	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/cdf"
@@ -291,14 +291,14 @@ downloadCDA (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cda-pentaho/lastSuccessfulBuild/artifact/cda-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://www.webdetails.pt/ficheiros/cda/14.05.06/4.x/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cda/14.06.18/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cda/lastSuccessfulBuild/artifact/cda-pentaho5/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://www.webdetails.pt/ficheiros/cda/14.05.06/5.x/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cda/14.06.18/5.x/dist.zip'
 	    fi
 
 	fi
@@ -316,14 +316,14 @@ downloadCDE (){
 		then
 		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
 		else
-		    URL='http://www.webdetails.pt/ficheiros/cde/14.05.06/4.x/dist.zip'
+		    URL='http://www.webdetails.pt/ficheiros/cde/14.06.18/4.x/dist.zip'
 		fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/webdetails-cde-5.0/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
 		else
-		    URL='http://www.webdetails.pt/ficheiros/cde/14.05.06/5.x/dist.zip'
+		    URL='http://www.webdetails.pt/ficheiros/cde/14.06.18/5.x/dist.zip'
 		fi
 	fi
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
@@ -340,14 +340,14 @@ downloadCGG (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/cgg-pentaho/dist/*zip*/dist.zip'
 		else
-	    	URL='http://www.webdetails.pt/ficheiros/cgg/14.05.06/4.x/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cgg/14.06.18/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cgg/lastSuccessfulBuild/artifact/cgg-pentaho5/dist/*zip*/dist.zip'
     	else
-    	    URL='http://www.webdetails.pt/ficheiros/cgg/14.05.06/5.x/dist.zip'
+    	    URL='http://www.webdetails.pt/ficheiros/cgg/14.06.18/5.x/dist.zip'
     	fi
 	fi
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
