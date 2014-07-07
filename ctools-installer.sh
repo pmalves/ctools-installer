@@ -197,7 +197,7 @@ then
     FILESUFIX='-TRUNK-SNAPSHOT'
 else
 	URL1='-release'
-    FILESUFIX='-??.??.??'
+    FILESUFIX='-??.??.??*'
 fi
 
 
