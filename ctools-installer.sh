@@ -197,7 +197,7 @@ then
     FILESUFIX='-TRUNK-SNAPSHOT'
 else
 	URL1='-release'
-    FILESUFIX='-??.??.??*'
+    FILESUFIX='-??.??.??'
 fi
 
 
@@ -545,7 +545,7 @@ installCDA (){
 installCGG (){
 	rm -rf $SOLUTION_DIR/system/cgg
 
-	unzip -o .tmp/dist/cgg$FILESUFIX*zip -d "$SOLUTION_DIR/system/" > /dev/null
+	unzip -o .tmp/dist/cgg$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 
 	# Changes to the server; 1 - delete batik; 2 - copy new one plus xml and fop
 
