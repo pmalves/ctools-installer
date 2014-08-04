@@ -387,7 +387,22 @@ downloadSparkl (){
 
 downloadCDC (){
 	# CDC
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDC'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	if [[ "$BASERVER_VERSION" = "4x" ]]; then
+		if [ $BRANCH = 'dev' ]
+		then
+	        URL='http://ci.pentaho.com/job/pentaho-cdc/lastSuccessfulBuild/artifact/cdc-pentaho/dist/*zip*/dist.zip'
+	    else
+	    	URL='http://ci.pentaho.com/job/pentaho-cdc-release/lastSuccessfulBuild/artifact/cdc-pentaho/dist/*zip*/dist.zip'
+	    fi
+	else
+		if [ $BRANCH = 'dev' ]
+		then
+	        URL='http://ci.pentaho.com/job/pentaho-cdc/lastSuccessfulBuild/artifact/cdc-pentaho5/dist/*zip*/dist.zip'
+	    else
+	    	URL='http://ci.pentaho.com/job/pentaho-cdc-release/lastSuccessfulBuild/artifact/cdc-pentaho5/dist/*zip*/dist.zip'
+	    fi
+	fi
+
 	download_file "CDC" "$URL" "dist.zip" ".tmp/cdc"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cdc/dist.zip -d .tmp > /dev/null
@@ -397,7 +412,22 @@ downloadCDC (){
 
 downloadCDB (){
 	# CDB
-	URL='http://ci.analytical-labs.com/job/Webdetails-CDB'$URL1'/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	if [[ "$BASERVER_VERSION" = "4x" ]]; then
+		if [ $BRANCH = 'dev' ]
+		then
+	        URL='http://ci.pentaho.com/job/pentaho-cdb/lastSuccessfulBuild/artifact/cdb-pentaho/dist/*zip*/dist.zip'
+	    else
+	    	URL='http://ci.pentaho.com/job/pentaho-cdb-release/lastSuccessfulBuild/artifact/cdb-pentaho/dist/*zip*/dist.zip'
+	    fi
+	else
+		if [ $BRANCH = 'dev' ]
+		then
+	        URL='http://ci.pentaho.com/job/pentaho-cdb/lastSuccessfulBuild/artifact/cdb-pentaho5/dist/*zip*/dist.zip'
+	    else
+	    	URL='http://ci.pentaho.com/job/pentaho-cdb-release/lastSuccessfulBuild/artifact/cdb-pentaho5/dist/*zip*/dist.zip'
+	    fi
+	fi
+	
 	download_file "CDB" "$URL" "dist.zip" ".tmp/cdb"
 	rm -f .tmp/dist/marketplace.xml
 	unzip -o .tmp/cdb/dist.zip -d .tmp > /dev/null
@@ -412,7 +442,7 @@ downloadCDV (){
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdv-pentaho/lastSuccessfulBuild/artifact/cdv-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.analytical-labs.com/job/Webdetails-CDV-Release/lastSuccessfulBuild/artifact/dist/*zip*/dist.zip'
+	    	URL='http://ci.pentaho.com/job/pentaho-cdv-release/lastSuccessfulBuild/artifact/cdv-pentaho/dist/*zip*/dist.zip'
 	    fi
 	else
     	URL='http://ci.pentaho.com/job/pentaho-cdv/lastSuccessfulBuild/artifact/cdv-pentaho5/dist/*zip*/dist.zip'
@@ -579,7 +609,18 @@ installSparkl (){
 
 installCDC (){
 	rm -rf $SOLUTION_DIR/system/cdc
-	unzip -o .tmp/dist/cdc$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	if [[ "$BASERVER_VERSION" = "4x" ]]; then
+        unzip -o .tmp/dist/cdc-pentaho$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	else	
+		if [ $BRANCH = 'dev' ]
+		then	
+	        unzip -o .tmp/dist/cdc-pentaho5$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	    else
+            unzip -o .tmp/dist/cdc$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null	    
+	    fi
+
+	fi
+
 
 	# Changes to the server;
 
@@ -593,23 +634,27 @@ installCDC (){
 
 installCDB (){
 	rm -rf $SOLUTION_DIR/system/cdb
-	unzip -o .tmp/dist/cdb$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	if [[ "$BASERVER_VERSION" = "4x" ]]; then
+        unzip -o .tmp/dist/cdb-pentaho$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	else	
+		if [ $BRANCH = 'dev' ]
+		then	
+	        unzip -o .tmp/dist/cdb-pentaho5$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+	    else
+            unzip -o .tmp/dist/cdb$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null	    
+	    fi
+	fi
 }
 
 installCDV (){
 	rm -rf $SOLUTION_DIR/system/cdv
 	rm -rf $SOLUTION_DIR/plugin-samples/cdv
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-		if [ $BRANCH = 'dev' ]
-		then
-			unzip -o .tmp/dist/cdv-pentaho*$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
-		else
-			unzip -o .tmp/dist/cdv$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
-	    fi
+        unzip -o .tmp/dist/cdv-pentaho$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	else
-			unzip -o .tmp/dist/cdv$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
+        unzip -o .tmp/dist/cdv$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
 	fi
-	installSamples plugin-samples .tmp/dist/cdv-samples$FILESUFIX*zip
+#	installSamples plugin-samples .tmp/dist/cdv-samples$FILESUFIX*zip
 }
 
 installSaiku (){
@@ -742,7 +787,7 @@ fi
 
 if [[ $HAS_WEBAPP_PATH -eq 1 ]]
 then
-	if [ $BASERVER_VERSION = '5x' ] || [ "$MODULES" != "" ] ||  $ASSUME_YES; then
+	if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
         INSTALL_CDC=1
     else
 		echo
@@ -759,7 +804,7 @@ else
 fi
 
 
-if [ $BASERVER_VERSION = '5x' ] || [ "$MODULES" != "" ] ||  $ASSUME_YES; then
+if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
     INSTALL_CDB=1
 else
     echo
@@ -875,8 +920,8 @@ echo
 [ $INSTALL_CGG -eq 0 ] || downloadCGG
 [ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || downloadCFR
 [ $INSTALL_SPARKL -eq 0 ] || downloadSparkl
-[ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDC -eq 0 ] || downloadCDC
-[ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDB -eq 0 ] || downloadCDB
+[ $INSTALL_CDC -eq 0 ] || downloadCDC
+[ $INSTALL_CDB -eq 0 ] || downloadCDB
 [ $INSTALL_CDV -eq 0 ] || downloadCDV
 [ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_SAIKU_ADHOC -eq 0 ] || downloadSaikuAdhoc
@@ -895,8 +940,8 @@ echo
 [ $INSTALL_CGG -eq 0 ] || installCGG
 [ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || installCFR
 [ $INSTALL_SPARKL -eq 0 ] || installSparkl
-[ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDC -eq 0 ] || installCDC
-[ $BASERVER_VERSION = '5x' ] || [ $INSTALL_CDB -eq 0 ] || installCDB
+[ $INSTALL_CDC -eq 0 ] || installCDC
+[ $INSTALL_CDB -eq 0 ] || installCDB
 [ $INSTALL_CDV -eq 0 ] || installCDV
 [ $INSTALL_SAIKU -eq 0 ] || installSaiku
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_SAIKU_ADHOC -eq 0 ] || installSaikuAdhoc
