@@ -314,14 +314,14 @@ downloadCDE (){
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		if [ $BRANCH = 'dev' ]
 		then
-		    URL='http://ci.analytical-labs.com/job/Webdetails-CDE'$URL1'/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
+		    URL='http://ci.pentaho.com/job/pentaho-cde-pentaho/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
 		else
 		    URL='http://www.webdetails.pt/ficheiros/cde/14.07.29/4.x/dist.zip'
 		fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
-    		URL='http://ci.pentaho.com/job/webdetails-cde-5.0/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
+    		URL='http://ci.pentaho.com/job/pentaho-cde/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
 		else
 		    URL='http://www.webdetails.pt/ficheiros/cde/14.07.29/5.x/dist.zip'
 		fi
