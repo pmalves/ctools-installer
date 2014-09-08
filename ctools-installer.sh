@@ -254,7 +254,7 @@ downloadMarketplace () {
 	fi
 	download_file "Marketplace"  "$URL"  "plugin.zip"  ".tmp/marketplace"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/marketplace/plugin.zip -d .tmp > /dev/null
+	unzip -o .tmp/marketplace/dist/plugin.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -278,7 +278,7 @@ downloadCDF () {
 	fi
 	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/cdf"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cdf/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cdf/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -304,7 +304,7 @@ downloadCDA (){
 	fi
 	download_file "CDA"  "$URL"  "dist.zip"  ".tmp/cda"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cda/dist.zip  -d .tmp > /dev/null
+	unzip -o .tmp/cda/dist/dist.zip  -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -328,7 +328,7 @@ downloadCDE (){
 	fi
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cde/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cde/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -352,7 +352,7 @@ downloadCGG (){
 	fi
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cgg/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cgg/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -366,7 +366,7 @@ downloadCFR (){
 	fi
 	download_file "CFR" "$URL" "dist.zip" ".tmp/cfr"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cfr/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cfr/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -380,7 +380,7 @@ downloadSparkl (){
 	fi
 	download_file "Sparkl" "$URL" "dist.zip" ".tmp/sparkl"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/sparkl/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/sparkl/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -405,7 +405,7 @@ downloadCDC (){
 
 	download_file "CDC" "$URL" "dist.zip" ".tmp/cdc"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cdc/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cdc/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -430,7 +430,7 @@ downloadCDB (){
 	
 	download_file "CDB" "$URL" "dist.zip" ".tmp/cdb"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cdb/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cdb/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -449,7 +449,7 @@ downloadCDV (){
 	fi
 	download_file "CDV" "$URL" "dist.zip" ".tmp/cdv"
 	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cdv/dist.zip -d .tmp > /dev/null
+	unzip -o .tmp/cdv/dist/dist.zip -d .tmp > /dev/null
 	chmod -R u+rwx .tmp
 	echo "Done"
 }
@@ -462,7 +462,7 @@ downloadSaiku (){
 			URL='http://ci.analytical-labs.com/job/saiku-bi-platform-plugin/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin/target/*zip*/target.zip'
 			download_file "SAIKU" "$URL" "target.zip" ".tmp/saiku"
 			rm -f .tmp/dist/marketplace.xml
-			unzip -o .tmp/saiku/target.zip -d .tmp > /dev/null
+			unzip -o .tmp/saiku/dist/target.zip -d .tmp > /dev/null
 			chmod -R u+rwx .tmp
 			mv .tmp/target/saiku-* .tmp
 		else
@@ -475,7 +475,7 @@ downloadSaiku (){
 			URL='http://ci.analytical-labs.com/job/saiku-bi-platform-plugin-p5/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin-p5/target/*zip*/target.zip'
 			download_file "SAIKU" "$URL" "target.zip" ".tmp/saiku"
 			rm -f .tmp/dist/marketplace.xml
-			unzip -o .tmp/saiku/target.zip -d .tmp > /dev/null
+			unzip -o .tmp/saiku/dist/target.zip -d .tmp > /dev/null
 			chmod -R u+rwx .tmp
 			mv .tmp/target/saiku-* .tmp
 		else
@@ -493,7 +493,7 @@ downloadSaikuAdhoc (){
 		URL='http://ci.analytical-labs.com/job/saiku-adhoc-plugin/lastSuccessfulBuild/artifact/saiku-adhoc-plugin/target/*zip*/target.zip'
 		download_file "SAIKU_ADHOC" "$URL" "target.zip" ".tmp/saiku-adhoc"
 		rm -f .tmp/dist/marketplace.xml
-		unzip -o .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null
+		unzip -o .tmp/saiku-adhoc/dist/target.zip -d .tmp > /dev/null
 		chmod -R u+rwx .tmp
 		mv .tmp/target/saiku-adhoc-* .tmp
 	else
