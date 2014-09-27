@@ -250,7 +250,7 @@ downloadMarketplace () {
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		URL='http://ci.pentaho.com/job/marketplace-4.8'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-plugin-TRUNK-SNAPSHOT.zip'
 	else
-		URL='http://ci.pentaho.com/job/marketplace'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-plugin-TRUNK-SNAPSHOT.zip'
+		URL='http://ci.pentaho.com/job/marketplace'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-TRUNK-SNAPSHOT.zip'
 	fi
 	download_file "Marketplace"  "$URL"  "plugin.zip"  ".tmp/marketplace"
 	rm -f .tmp/dist/marketplace.xml
