@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER=`basename "$0"`
-VER='1.46'
+VER='1.47'
 
 echo
 echo CTOOLS
@@ -15,6 +15,7 @@ echo
 echo
 echo Changelog:
 echo
+echo v1.47 - Removed CDB installation
 echo v1.46 - Added stable versions for Pentaho 5
 echo v1.45 - Added Marketplace, CFR and Sparkl, currently on -b dev only
 echo v1.44 - Added option -r to specify offline mode
@@ -79,7 +80,7 @@ usage (){
 	echo "-s    Solution path (eg: /biserver/pentaho-solutions)"
 	echo "-w    Pentaho webapp server path (required for cgg on versions before 4.5. eg: /biserver-ce/tomcat/webapps/pentaho)"
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
-	echo "-c    Comma-separated list of CTools to install (Supported module-names: marketplace,cdf,cda,cde,cgg,cfr,sparkl,cdc,cdb,cdv,saiku,saikuadhoc)"
+	echo "-c    Comma-separated list of CTools to install (Supported module-names: marketplace,cdf,cda,cde,cgg,cfr,sparkl,cdc,cdv,saiku,saikuadhoc)"
 	echo "-y    Assume yes to all prompts"
 	echo "-n    Add newline to end of prompts (for integration with CBF)"
 	echo "-r    Directory for storing offline files"
@@ -410,30 +411,6 @@ downloadCDC (){
 	echo "Done"
 }
 
-downloadCDB (){
-	# CDB
-	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-		if [ $BRANCH = 'dev' ]
-		then
-	        URL='http://ci.pentaho.com/job/pentaho-cdb/lastSuccessfulBuild/artifact/cdb-pentaho/dist/*zip*/dist.zip'
-	    else
-	    	URL='http://ci.pentaho.com/job/pentaho-cdb-release/lastSuccessfulBuild/artifact/cdb-pentaho/dist/*zip*/dist.zip'
-	    fi
-	else
-		if [ $BRANCH = 'dev' ]
-		then
-	        URL='http://ci.pentaho.com/job/pentaho-cdb/lastSuccessfulBuild/artifact/cdb-pentaho5/dist/*zip*/dist.zip'
-	    else
-	    	URL='http://ci.pentaho.com/job/pentaho-cdb-release/lastSuccessfulBuild/artifact/cdb-pentaho5/dist/*zip*/dist.zip'
-	    fi
-	fi
-	
-	download_file "CDB" "$URL" "dist.zip" ".tmp/cdb"
-	rm -f .tmp/dist/marketplace.xml
-	unzip -o .tmp/cdb/dist.zip -d .tmp > /dev/null
-	chmod -R u+rwx .tmp
-	echo "Done"
-}
 
 downloadCDV (){
 	# CDV
@@ -632,19 +609,6 @@ installCDC (){
 	cp $CDC_HAZELCAST_DIR/*.jar  $LIB_DIR
 }
 
-installCDB (){
-	rm -rf $SOLUTION_DIR/system/cdb
-	if [[ "$BASERVER_VERSION" = "4x" ]]; then
-        unzip -o .tmp/dist/cdb-pentaho$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
-	else	
-		if [ $BRANCH = 'dev' ]
-		then	
-	        unzip -o .tmp/dist/cdb-pentaho5$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null
-	    else
-            unzip -o .tmp/dist/cdb$FILESUFIX.zip -d "$SOLUTION_DIR/system/" > /dev/null	    
-	    fi
-	fi
-}
 
 installCDV (){
 	rm -rf $SOLUTION_DIR/system/cdv
@@ -679,7 +643,6 @@ INSTALL_CGG=0
 INSTALL_CFR=0
 INSTALL_SPARKL=0
 INSTALL_CDC=0
-INSTALL_CDB=0
 INSTALL_CDV=0
 INSTALL_SAIKU=0
 INSTALL_SAIKU_ADHOC=0
@@ -804,19 +767,6 @@ else
 fi
 
 
-if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
-    INSTALL_CDB=1
-else
-    echo
-	echo $ECHO_FLAG "Install CDB? This will delete everything in $SOLUTION_DIR/system/cdb. you sure? (y/N) "
-	read -e answer < /dev/tty
-
-	case $answer in
-	    [Yy]* ) INSTALL_CDB=1;;
-		* ) ;;
-    esac
-fi
-
 
 if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
     INSTALL_CDV=1
@@ -877,7 +827,6 @@ if [ "$MODULES" != "" ]; then
   INSTALL_CFR=0
   INSTALL_SPARKL=0
   INSTALL_CDC=0
-  INSTALL_CDB=0
   INSTALL_CDV=0
   INSTALL_SAIKU=0
   INSTALL_SAIKU_ADHOC=0
@@ -893,7 +842,6 @@ if [ "$MODULES" != "" ]; then
       cfr) INSTALL_CFR=1;;
       sparkl) INSTALL_SPARKL=1;;
       cdc) INSTALL_CDC=1;;
-      cdb) INSTALL_CDB=1;;
       cdv) INSTALL_CDV=1;;
       saiku) INSTALL_SAIKU=1;;
       saikuadhoc) INSTALL_SAIKU_ADHOC=1;;
@@ -903,7 +851,7 @@ if [ "$MODULES" != "" ]; then
 fi
 
 
-[ $INSTALL_MARKETPLACE -ne 0 ] || [ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CFR -ne 0 ] || [ $INSTALL_SPARKL -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDB -ne 0 ] || [ $INSTALL_CDV -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
+[ $INSTALL_MARKETPLACE -ne 0 ] || [ $INSTALL_CDF -ne 0 ] || [ $INSTALL_CDE -ne 0 ] || [ $INSTALL_CDA -ne 0 ] || [ $INSTALL_CGG -ne 0 ] || [ $INSTALL_CFR -ne 0 ] || [ $INSTALL_SPARKL -ne 0 ] || [ $INSTALL_CDC -ne 0 ] || [ $INSTALL_CDV -ne 0 ]  || [ $INSTALL_SAIKU -ne 0 ] || [ $INSTALL_SAIKU_ADHOC -ne 0 ] ||  nothingToDo
 
 
 # downloading files
@@ -921,7 +869,6 @@ echo
 [ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || downloadCFR
 [ $INSTALL_SPARKL -eq 0 ] || downloadSparkl
 [ $INSTALL_CDC -eq 0 ] || downloadCDC
-[ $INSTALL_CDB -eq 0 ] || downloadCDB
 [ $INSTALL_CDV -eq 0 ] || downloadCDV
 [ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_SAIKU_ADHOC -eq 0 ] || downloadSaikuAdhoc
@@ -941,7 +888,6 @@ echo
 [ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || installCFR
 [ $INSTALL_SPARKL -eq 0 ] || installSparkl
 [ $INSTALL_CDC -eq 0 ] || installCDC
-[ $INSTALL_CDB -eq 0 ] || installCDB
 [ $INSTALL_CDV -eq 0 ] || installCDV
 [ $INSTALL_SAIKU -eq 0 ] || installSaiku
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_SAIKU_ADHOC -eq 0 ] || installSaikuAdhoc
