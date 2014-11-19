@@ -82,6 +82,7 @@ usage (){
 	echo "-b    Branch from where to get ctools, stable for release, dev for trunk. Default is stable"
 	echo "-c    Comma-separated list of CTools to install (Supported module-names: marketplace,cdf,cda,cde,cgg,cfr,sparkl,cdc,cdv,saiku,saikuadhoc)"
 	echo "-y    Assume yes to all prompts"
+	echo "--no-update Skip update of the ctools-installer.sh"
 	echo "-n    Add newline to end of prompts (for integration with CBF)"
 	echo "-r    Directory for storing offline files"
 	echo "-h    This help screen"
@@ -106,6 +107,7 @@ BRANCH='stable'
 ECHO_FLAG='-n'
 MODULES=''
 ASSUME_YES=false
+NO_UPDATE=false
 OFFLINE_REPOSITORY=''
 BASERVER_VERSION=''
 
@@ -120,6 +122,7 @@ do
 	-b) BRANCH="$2"; shift;;
 	-c) MODULES="$2"; shift;;
 	-y)	ASSUME_YES=true;;
+	--no-update) NO_UPDATE=true;;
 	-n)	ECHO_FLAG='';;
 	-r) OFFLINE_REPOSITORY="$2"; shift;;
 	--)	break;;
@@ -212,6 +215,8 @@ if ! diff --strip-trailing-cr $0 .tmp/ctools-installer.sh >/dev/null ; then
   answer=n
   if $ASSUME_YES ; then
     answer=y
+  elif $NO_UPDATE ; then
+    answer=n
   else
     echo
     echo $ECHO_FLAG "There a new ctools-installer version available. Do you want to upgrade? (y/N) "
