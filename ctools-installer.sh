@@ -251,7 +251,7 @@ downloadMarketplace () {
 	if [[ "$BASERVER_VERSION" = "4x" ]]; then
 		URL='http://ci.pentaho.com/job/marketplace-4.8'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-plugin-TRUNK-SNAPSHOT.zip'
 	else
-		URL='http://ci.pentaho.com/job/marketplace'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-plugin-TRUNK-SNAPSHOT.zip'
+		URL='http://ci.pentaho.com/job/marketplace'$URL1'/lastSuccessfulBuild/artifact/dist/marketplace-TRUNK-SNAPSHOT.zip'
 	fi
 	download_file "Marketplace"  "$URL"  "plugin.zip"  ".tmp/marketplace"
 	rm -f .tmp/dist/marketplace.xml
@@ -393,14 +393,14 @@ downloadCDC (){
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdc/lastSuccessfulBuild/artifact/cdc-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.pentaho.com/job/pentaho-cdc-release/lastSuccessfulBuild/artifact/cdc-pentaho/dist/*zip*/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cdc/14.10.15/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdc/lastSuccessfulBuild/artifact/cdc-pentaho5/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.pentaho.com/job/pentaho-cdc-release/lastSuccessfulBuild/artifact/cdc-pentaho5/dist/*zip*/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cdc/14.10.15/5.x/dist.zip'
 	    fi
 	fi
 
@@ -419,10 +419,15 @@ downloadCDV (){
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdv-pentaho/lastSuccessfulBuild/artifact/cdv-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ci.pentaho.com/job/pentaho-cdv-release/lastSuccessfulBuild/artifact/cdv-pentaho/dist/*zip*/dist.zip'
+	    	URL='http://www.webdetails.pt/ficheiros/cdv/14.10.15/4.x/dist.zip'
 	    fi
 	else
-    	URL='http://ci.pentaho.com/job/pentaho-cdv/lastSuccessfulBuild/artifact/cdv-pentaho5/dist/*zip*/dist.zip'
+		if [ $BRANCH = 'dev' ]
+		then	
+        	URL='http://ci.pentaho.com/job/pentaho-cdv/lastSuccessfulBuild/artifact/cdv-pentaho5/dist/*zip*/dist.zip'
+        else
+            echo "CDV [stable] not available for Pentaho 5.x."
+        fi
 	fi
 	download_file "CDV" "$URL" "dist.zip" ".tmp/cdv"
 	rm -f .tmp/dist/marketplace.xml
@@ -449,15 +454,10 @@ downloadSaiku (){
 	else
 		if [ $BRANCH = 'dev' ]
 		then
-			URL='http://ci.analytical-labs.com/job/saiku-bi-platform-plugin-p5/lastSuccessfulBuild/artifact/saiku-bi-platform-plugin-p5/target/*zip*/target.zip'
-			download_file "SAIKU" "$URL" "target.zip" ".tmp/saiku"
-			rm -f .tmp/dist/marketplace.xml
-			unzip -o .tmp/saiku/target.zip -d .tmp > /dev/null
-			chmod -R u+rwx .tmp
-			mv .tmp/target/saiku-* .tmp
-		else
-			echo "SAIKU [stable] not available for Pentaho 5.x yet."
-		fi
+            echo 'SAIKU [trunk] not available for download. downloading stable'
+        fi	    
+        URL='http://meteorite.bi/downloads/saiku-plugin-p5-3.0.6.zip'
+		download_file "SAIKU" "$URL" "saiku-plugin.zip" ".tmp"
 	fi
 	echo "Done"
 }
@@ -467,12 +467,9 @@ downloadSaikuAdhoc (){
 	# SAIKU Adhoc
 	if [ $BRANCH = 'dev' ]
 	then
-		URL='http://ci.analytical-labs.com/job/saiku-adhoc-plugin/lastSuccessfulBuild/artifact/saiku-adhoc-plugin/target/*zip*/target.zip'
-		download_file "SAIKU_ADHOC" "$URL" "target.zip" ".tmp/saiku-adhoc"
-		rm -f .tmp/dist/marketplace.xml
-		unzip -o .tmp/saiku-adhoc/target.zip -d .tmp > /dev/null
-		chmod -R u+rwx .tmp
-		mv .tmp/target/saiku-adhoc-* .tmp
+    	echo 'SAIKU ADHOC [trunk] not available for download. downloading stable'
+		URL='https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip'
+		download_file "SAIKU_ADHOC" "$URL" "saiku-adhoc-plugin.zip" ".tmp"
 	else
 		URL='https://github.com/Mgiepz/saiku-reporting/raw/gh-pages/downloads/saiku-adhoc-plugin-1.0-GA.zip'
 		download_file "SAIKU_ADHOC" "$URL" "saiku-adhoc-plugin-1.0-GA.zip" ".tmp"
@@ -717,7 +714,7 @@ fi
 
 
 if  [ "$BRANCH" = "dev" ]; then
-	if  [ $BASERVER_VERSION = '5x' ] || [ "$MODULES" != "" ] || $ASSUME_YES; then
+	if  [ "$MODULES" != "" ] || $ASSUME_YES; then
 		INSTALL_CFR=1
 	else
 		echo
@@ -733,7 +730,7 @@ fi
 
 
 if  [ "$BRANCH" = "dev" ]; then
-	if  [ $BASERVER_VERSION = '5x' ] || [ "$MODULES" != "" ] || $ASSUME_YES; then
+	if  [ "$MODULES" != "" ] || $ASSUME_YES; then
 		INSTALL_Sparkl=1
 	else
 		echo
@@ -767,34 +764,36 @@ else
 fi
 
 
+if ([ $BRANCH = 'dev' ]  && [ $BASERVER_VERSION = '5x' ] ) || [ $BASERVER_VERSION = '4x' ];  then
+    if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
+        INSTALL_CDV=1
+    else
+        echo
+    	echo $ECHO_FLAG "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
+	    read -e answer < /dev/tty
 
-if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
-    INSTALL_CDV=1
-else
-    echo
-	echo $ECHO_FLAG "Install CDV? This will delete everything in $SOLUTION_DIR/system/cdv. you sure? (y/N) "
-	read -e answer < /dev/tty
-
-	case $answer in
-	    [Yy]* ) INSTALL_CDV=1;;
-		* ) ;;
-    esac
+    	case $answer in
+	        [Yy]* ) INSTALL_CDV=1;;
+		    * ) ;;
+        esac
+    fi
 fi
 
 
 
+if  [ $BASERVER_VERSION = '5x' ]; then
+    if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
+	    INSTALL_SAIKU=1
+    else
+	    echo
+    	echo $ECHO_FLAG "Install Saiku? This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
+	    read -e answer < /dev/tty
 
-if [ "$MODULES" != "" ] ||  $ASSUME_YES; then
-	INSTALL_SAIKU=1
-else
-	echo
-	echo $ECHO_FLAG "Install Saiku? This will delete everything in $SOLUTION_DIR/system/saiku. you sure? (y/N) "
-	read -e answer < /dev/tty
-
-	case $answer in
-	  [Yy]* ) INSTALL_SAIKU=1;;
-	  * ) ;;
-	esac
+    	case $answer in
+	      [Yy]* ) INSTALL_SAIKU=1;;
+    	  * ) ;;
+	    esac
+    fi
 fi
 
 if [ $BASERVER_VERSION = '5x' ] || [ "$MODULES" != "" ] ||  $ASSUME_YES; then
@@ -869,8 +868,8 @@ echo
 [ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || downloadCFR
 [ $INSTALL_SPARKL -eq 0 ] || downloadSparkl
 [ $INSTALL_CDC -eq 0 ] || downloadCDC
-[ $INSTALL_CDV -eq 0 ] || downloadCDV
-[ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
+([ $BRANCH != 'dev' ]  && [ $BASERVER_VERSION = '5x' ] ) || [ $INSTALL_CDV -eq 0 ] || downloadCDV
+[ $BASERVER_VERSION = '4x' ] || [ $INSTALL_SAIKU -eq 0 ] || downloadSaiku
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_SAIKU_ADHOC -eq 0 ] || downloadSaikuAdhoc
 
 
@@ -888,8 +887,8 @@ echo
 [ $BRANCH != 'dev' ] || [ $INSTALL_CFR -eq 0 ] || installCFR
 [ $INSTALL_SPARKL -eq 0 ] || installSparkl
 [ $INSTALL_CDC -eq 0 ] || installCDC
-[ $INSTALL_CDV -eq 0 ] || installCDV
-[ $INSTALL_SAIKU -eq 0 ] || installSaiku
+([ $BRANCH != 'dev' ]  && [ $BASERVER_VERSION = '5x' ] ) || [ $INSTALL_CDV -eq 0 ] || installCDV
+[ $BASERVER_VERSION = '4x' ] || [ $INSTALL_SAIKU -eq 0 ] || installSaiku
 [ $BASERVER_VERSION = '5x' ] || [ $INSTALL_SAIKU_ADHOC -eq 0 ] || installSaikuAdhoc
 
 
