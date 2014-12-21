@@ -193,7 +193,8 @@ do
   fi
 done
 
-
+# enable extended regexp matching
+shopt -s extglob
 
 if [ $BRANCH = 'dev' ]
 then
@@ -201,7 +202,8 @@ then
     FILESUFIX='-TRUNK-SNAPSHOT'
 else
 	URL1='-release'
-    FILESUFIX='-??.??.??'
+    FILESUFIX='-+([0-9.])' # +([0-9.]) is an extended regexp. meaning match
+                           # at least one of these items: [0-9.]
 fi
 
 
