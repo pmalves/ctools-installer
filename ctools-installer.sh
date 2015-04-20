@@ -299,7 +299,7 @@ downloadCDA (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cda-pentaho/lastSuccessfulBuild/artifact/cda-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://www.webdetails.pt/ficheiros/cda/14.12.10/4.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cda/15.04.16/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
