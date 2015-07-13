@@ -281,14 +281,14 @@ downloadCDF () {
 	    then
     		URL='http://ci.pentaho.com/job/pentaho-cdf-pentaho/lastSuccessfulBuild/artifact/cdf-pentaho/dist/*zip*/dist.zip'
     	else
-    	  URL='http://ctools.pentaho.com/files/cdf/15.04.16/4.x/dist.zip'
+    	  URL='http://ctools.pentaho.com/files/cdf/15.06.30/4.x/dist.zip'
     	fi
 	else
 	    if  [ $BRANCH = 'dev' ]
 	    then
 		    URL='http://ci.pentaho.com/job/pentaho-cdf/lastSuccessfulBuild/artifact/cdf-pentaho5/dist/*zip*/dist.zip'
 		else
-            URL='http://ctools.pentaho.com/files/cdf/15.04.16/5.x/dist.zip'
+            URL='http://ctools.pentaho.com/files/cdf/15.06.30/5.x/dist.zip'
 		fi
 	fi
 	download_file "CDF"  "$URL"  "dist.zip"  ".tmp/cdf"
@@ -306,14 +306,14 @@ downloadCDA (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cda-pentaho/lastSuccessfulBuild/artifact/cda-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ctools.pentaho.com/files/cda/15.04.16/4.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cda/15.06.30/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cda/lastSuccessfulBuild/artifact/cda-pentaho5/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ctools.pentaho.com/files/cda/15.04.16/5.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cda/15.06.30/5.x/dist.zip'
 	    fi
 
 	fi
@@ -331,14 +331,14 @@ downloadCDE (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cde-pentaho/lastSuccessfulBuild/artifact/cde-pentaho/dist/*zip*/dist.zip'
 		else
-		    URL='http://ctools.pentaho.com/files/cde/15.04.16/4.x/dist.zip'
+		    URL='http://ctools.pentaho.com/files/cde/15.06.30/4.x/dist.zip'
 		fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cde/lastSuccessfulBuild/artifact/cde-pentaho5/dist/*zip*/dist.zip'
 		else
-		    URL='http://ctools.pentaho.com/files/cde/15.04.16/5.x/dist.zip'
+		    URL='http://ctools.pentaho.com/files/cde/15.06.30/5.x/dist.zip'
 		fi
 	fi
 	download_file "CDE"  "$URL"  "dist.zip"  ".tmp/cde"
@@ -355,14 +355,14 @@ downloadCGG (){
 		then
 		    URL='http://ci.pentaho.com/job/pentaho-cgg-pentaho/lastSuccessfulBuild/artifact/cgg-pentaho/dist/*zip*/dist.zip'
 		else
-	    	URL='http://ctools.pentaho.com/files/cgg/15.04.16/4.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cgg/15.06.30/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
     		URL='http://ci.pentaho.com/job/pentaho-cgg/lastSuccessfulBuild/artifact/cgg-pentaho5/dist/*zip*/dist.zip'
     	else
-    	    URL='http://ctools.pentaho.com/files/cgg/15.04.16/5.x/dist.zip'
+    	    URL='http://ctools.pentaho.com/files/cgg/15.06.30/5.x/dist.zip'
     	fi
 	fi
 	download_file "CGG" "$URL" "dist.zip" ".tmp/cgg"
@@ -407,14 +407,14 @@ downloadCDC (){
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdc/lastSuccessfulBuild/artifact/cdc-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ctools.pentaho.com/files/cdc/15.04.16/4.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cdc/15.06.30/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdc/lastSuccessfulBuild/artifact/cdc-pentaho5/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ctools.pentaho.com/files/cdc/15.04.16/5.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cdc/15.06.30/5.x/dist.zip'
 	    fi
 	fi
 
@@ -433,14 +433,14 @@ downloadCDV (){
 		then
 	        URL='http://ci.pentaho.com/job/pentaho-cdv-pentaho/lastSuccessfulBuild/artifact/cdv-pentaho/dist/*zip*/dist.zip'
 	    else
-	    	URL='http://ctools.pentaho.com/files/cdv/15.04.16/4.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cdv/15.06.30/4.x/dist.zip'
 	    fi
 	else
 		if [ $BRANCH = 'dev' ]
 		then	
         	URL='http://ci.pentaho.com/job/pentaho-cdv/lastSuccessfulBuild/artifact/cdv-pentaho5/dist/*zip*/dist.zip'
         else
-	    	URL='http://ctools.pentaho.com/files/cdv/15.04.16/5.x/dist.zip'
+	    	URL='http://ctools.pentaho.com/files/cdv/15.06.30/5.x/dist.zip'
         fi
 	fi
 	download_file "CDV" "$URL" "dist.zip" ".tmp/cdv"
